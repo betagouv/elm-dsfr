@@ -1,4 +1,4 @@
-module UI.Card exposing (..)
+module UI.Card exposing (view)
 
 import Accessibility exposing (Html, a, div, h4, p)
 import Html.Attributes as Attr exposing (class)
