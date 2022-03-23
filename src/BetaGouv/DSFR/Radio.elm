@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Radio exposing (Item, radio)
+module BetaGouv.DSFR.Radio exposing (Item, radio, radioInline)
 
 import Accessibility exposing (Html, div, fieldset, label)
 import Html exposing (input)
@@ -14,12 +14,22 @@ type alias Item value msg =
 
 
 radio : List (Item value msg) -> (value -> msg) -> Maybe value -> Html msg
-radio items msg current =
+radio =
+    radioCommon False
+
+
+radioInline : List (Item value msg) -> (value -> msg) -> Maybe value -> Html msg
+radioInline =
+    radioCommon True
+
+
+radioCommon inline items msg current =
     div
         [ Attr.class "fr-form-group"
         ]
         [ fieldset
             [ Attr.class "fr-fieldset"
+            , Attr.classList [ ( "fr-fieldset--inline", inline ) ]
             ]
             [ div [ Attr.class "fr-fieldset__content my-4" ] <|
                 List.map (radioItem msg current) <|

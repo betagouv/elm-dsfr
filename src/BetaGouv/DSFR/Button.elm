@@ -1,6 +1,7 @@
 module BetaGouv.DSFR.Button exposing (ButtonConfig, ButtonSize(..), ButtonType(..), IconPosition(..), MandatoryButtonConfig, OptionalButtonConfig, buttonSize, buttonType, defaultOptions, disable, iconAttr, large, new, reset, secondary, small, submit, view, withAttrs, withDisabled, withIcon, withOptions, withPrimary, withSize, withType)
 
-import Accessibility as Html
+import Accessibility as Html exposing (Attribute, Html)
+import Html as Root
 import Html.Attributes as Attr
 import Html.Events as Events
 import Html.Extra
@@ -11,7 +12,7 @@ new mandatory =
     { mandatory = mandatory, optional = defaultOptions }
 
 
-view : ButtonConfig msg -> Html.Html msg
+view : ButtonConfig msg -> Html msg
 view { mandatory, optional } =
     let
         { label, onClick } =
@@ -19,18 +20,21 @@ view { mandatory, optional } =
 
         { disabled, type_, icon, size, primary, extraAttrs } =
             optional
+
+        ( node, buttonTypeAttrs ) =
+            buttonType type_
     in
-    Html.button
+    node
         (Attr.class "fr-btn"
             :: Attr.classList [ ( "fr-btn--secondary", not primary ) ]
             :: Attr.disabled disabled
-            :: buttonType type_
             :: iconAttr icon
             :: buttonSize size
             :: (onClick
                     |> Maybe.map Events.onClick
                     |> Maybe.withDefault Html.Extra.noAttr
                )
+            :: buttonTypeAttrs
             :: extraAttrs
         )
         [ Html.text label ]
@@ -54,7 +58,7 @@ type alias OptionalButtonConfig msg =
     , size : ButtonSize
     , icon : IconPosition
     , primary : Bool
-    , extraAttrs : List (Html.Attribute msg)
+    , extraAttrs : List (Attribute msg)
     }
 
 
@@ -62,6 +66,7 @@ type ButtonType
     = ClickableBtn
     | SubmitBtn
     | ResetBtn
+    | LinkButton String
 
 
 type ButtonSize
@@ -107,7 +112,7 @@ withDisabled disabled { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | disabled = disabled } }
 
 
-withAttrs : List (Html.Attribute msg) -> ButtonConfig msg -> ButtonConfig msg
+withAttrs : List (Attribute msg) -> ButtonConfig msg -> ButtonConfig msg
 withAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
 
@@ -153,20 +158,23 @@ defaultOptions =
     }
 
 
-buttonType : ButtonType -> Html.Attribute msg
+buttonType : ButtonType -> ( List (Attribute msg) -> List (Html msg) -> Html msg, Attribute msg )
 buttonType type_ =
     case type_ of
         SubmitBtn ->
-            Attr.type_ "submit"
+            ( Html.button, Attr.type_ "submit" )
 
         ResetBtn ->
-            Attr.type_ "reset"
+            ( Html.button, Attr.type_ "reset" )
 
         ClickableBtn ->
-            Attr.type_ "button"
+            ( Html.button, Attr.type_ "button" )
+
+        LinkButton href ->
+            ( Root.a, Attr.href href )
 
 
-iconAttr : IconPosition -> Html.Attribute msg
+iconAttr : IconPosition -> Attribute msg
 iconAttr icon =
     case icon of
         NoIcon ->
@@ -182,7 +190,7 @@ iconAttr icon =
             Attr.class iconName
 
 
-buttonSize : ButtonSize -> Html.Attribute msg
+buttonSize : ButtonSize -> Attribute msg
 buttonSize size =
     case size of
         SmallBtn ->

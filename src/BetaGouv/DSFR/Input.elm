@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, defaultOptions, input, new, view, withDisabled, withError, withHint, withOptions, withType)
+module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, defaultOptions, input, new, view, withDisabled, withError, withHint, withName, withOptions, withType)
 
 import Accessibility as Html exposing (Html)
 import Accessibility.Aria as Aria
@@ -49,6 +49,11 @@ withDisabled disabled { mandatory, optional } =
 withType : InputType -> InputConfig msg -> InputConfig msg
 withType type_ { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | type_ = type_ } }
+
+
+withName : String -> InputConfig msg -> InputConfig msg
+withName name { mandatory, optional } =
+    { mandatory = mandatory, optional = { optional | name = name } }
 
 
 type alias InputConfig msg =
