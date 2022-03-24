@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, ButtonSize(..), ButtonType(..), IconPosition(..), MandatoryButtonConfig, OptionalButtonConfig, buttonSize, buttonType, defaultOptions, disable, iconAttr, large, new, reset, secondary, small, submit, view, withAttrs, withDisabled, withIcon, withOptions, withPrimary, withSize, withType)
+module BetaGouv.DSFR.Button exposing (ButtonConfig, ButtonSize(..), ButtonType(..), IconPosition(..), MandatoryButtonConfig, OptionalButtonConfig, buttonSize, buttonType, defaultOptions, disable, iconAttr, large, linkButton, new, reset, secondary, small, submit, view, withAttrs, withDisabled, withIcon, withOptions, withPrimary, withSize, withType)
 
 import Accessibility as Html exposing (Attribute, Html)
 import Html as Root
@@ -125,6 +125,11 @@ submit =
 reset : ButtonConfig msg -> ButtonConfig msg
 reset =
     withType ResetBtn
+
+
+linkButton : String -> ButtonConfig msg -> ButtonConfig msg
+linkButton href =
+    withType <| LinkButton href
 
 
 secondary : ButtonConfig msg -> ButtonConfig msg

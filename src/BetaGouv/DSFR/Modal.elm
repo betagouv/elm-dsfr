@@ -1,9 +1,9 @@
-module UI.Modal exposing (Config, view)
+module BetaGouv.DSFR.Modal exposing (Config, view)
 
 import Accessibility exposing (Html, button, div, h1, span, text)
+import BetaGouv.DSFR.Button
 import Html exposing (node)
 import Html.Attributes as Attr
-import UI.Button
 
 
 type alias Config msg =
@@ -25,11 +25,11 @@ view config content =
             modalId ++ "-title"
 
         but =
-            UI.Button.new { onClick = Just config.openMsg, label = config.label }
-                |> UI.Button.withAttrs
+            DSFR.Button.new { onClick = Just config.openMsg, label = config.label }
+                |> DSFR.Button.withAttrs
                     [ Attr.attribute "aria-controls" modalId
                     ]
-                |> UI.Button.view
+                |> DSFR.Button.view
 
         modal =
             node "dialog"
