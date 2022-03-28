@@ -175,14 +175,13 @@ view { mandatory, optional } =
                         (defaultInputAttrs ++ [ Attr.type_ "number", Attr.attribute "inputmode" "numeric", Attr.pattern "[0-9]*" ])
     in
     Html.div
-        ([ Attr.class "fr-input-group"
-         , Attr.classList
-            [ ( "fr-input-group--valid", Nothing /= validMsg )
-            , ( "fr-input-group--error", Nothing /= errorMsg )
-            , ( "fr-input-group--disabled", disabled )
-            ]
-         ]
-            ++ extraAttrs
+        (Attr.class "fr-input-group"
+            :: Attr.classList
+                [ ( "fr-input-group--valid", Nothing /= validMsg )
+                , ( "fr-input-group--error", Nothing /= errorMsg )
+                , ( "fr-input-group--disabled", disabled )
+                ]
+            :: extraAttrs
         )
         [ Html.labelBefore [ Attr.class "h-full" ]
             (Html.label
