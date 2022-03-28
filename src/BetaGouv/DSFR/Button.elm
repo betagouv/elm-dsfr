@@ -5,7 +5,6 @@ import Html as Root
 import Html.Attributes as Attr
 import Html.Attributes.Extra
 import Html.Events as Events
-import Html.Extra
 
 
 new : MandatoryButtonConfig msg -> ButtonConfig msg
