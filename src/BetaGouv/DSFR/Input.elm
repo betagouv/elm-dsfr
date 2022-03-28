@@ -4,8 +4,9 @@ import Accessibility as Html exposing (Attribute, Html)
 import Accessibility.Aria as Aria
 import Html as Root
 import Html.Attributes as Attr
+import Html.Attributes.Extra
 import Html.Events as Events
-import Html.Extra exposing (empty)
+import Html.Extra exposing (nothing)
 import Json.Encode as Encode
 
 
@@ -136,9 +137,9 @@ view { mandatory, optional } =
                 [ ( "fr-input--valid", validMsg /= Nothing )
                 , ( "fr-input--error", errorMsg /= Nothing )
                 ]
-            , Html.Extra.attrIf (Nothing /= validMsg) <|
+            , Html.Attributes.Extra.attributeIf (Nothing /= validMsg) <|
                 Aria.describedBy [ name ++ "-desc-valid" ]
-            , Html.Extra.attrIf (Nothing /= errorMsg) <|
+            , Html.Attributes.Extra.attributeIf (Nothing /= errorMsg) <|
                 Aria.describedBy [ name ++ "-desc-error" ]
             , Attr.id name
             , Attr.name name
@@ -191,7 +192,7 @@ view { mandatory, optional } =
                 [ label
                 , case hint of
                     [] ->
-                        empty
+                        nothing
 
                     hints ->
                         Html.span [ Attr.class "fr-hint-text" ] hints
@@ -200,14 +201,18 @@ view { mandatory, optional } =
             (iconWrapper <|
                 inp
             )
-        , Html.Extra.viewJust validMsg <|
-            Html.p
+        , Html.Extra.viewMaybe
+            (Html.p
                 [ Attr.id <| name ++ "-desc-valid"
                 , Attr.class "fr-valid-text"
                 ]
-        , Html.Extra.viewJust errorMsg <|
-            Html.p
+            )
+            validMsg
+        , Html.Extra.viewMaybe
+            (Html.p
                 [ Attr.id <| name ++ "-desc-error"
                 , Attr.class "fr-error-text"
                 ]
+            )
+            errorMsg
         ]

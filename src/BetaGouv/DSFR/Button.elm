@@ -3,6 +3,7 @@ module BetaGouv.DSFR.Button exposing (ButtonConfig, ButtonSize(..), ButtonType(.
 import Accessibility as Html exposing (Attribute, Html)
 import Html as Root
 import Html.Attributes as Attr
+import Html.Attributes.Extra
 import Html.Events as Events
 import Html.Extra
 
@@ -32,7 +33,7 @@ view { mandatory, optional } =
             :: buttonSize size
             :: (onClick
                     |> Maybe.map Events.onClick
-                    |> Maybe.withDefault Html.Extra.noAttr
+                    |> Maybe.withDefault Html.Attributes.Extra.empty
                )
             :: buttonTypeAttrs
             :: extraAttrs
@@ -183,7 +184,7 @@ iconAttr : IconPosition -> Attribute msg
 iconAttr icon =
     case icon of
         NoIcon ->
-            Html.Extra.noAttr
+            Html.Attributes.Extra.empty
 
         LeftIcon iconName ->
             Attr.classList [ ( iconName, True ), ( "fr-btn--icon-left", True ) ]
@@ -202,7 +203,7 @@ buttonSize size =
             Attr.class "fr-btn--sm"
 
         MediumBtn ->
-            Html.Extra.noAttr
+            Html.Attributes.Extra.empty
 
         LargeBtn ->
             Attr.class "fr-btn--lg"
