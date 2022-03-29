@@ -1,6 +1,6 @@
 module BetaGouv.DSFR.SearchBar exposing (searchBar, searchBarLG)
 
-import Accessibility exposing (Html, div, formWithListeners, inputText, label, text)
+import Accessibility exposing (Html, formWithListeners, inputText, label, text)
 import Accessibility.Landmark
 import BetaGouv.DSFR.Button
 import Html.Attributes as Attr exposing (class)
