@@ -23,6 +23,7 @@ radioInline =
     radioCommon True
 
 
+radioCommon : Bool -> List (Item value msg) -> (value -> msg) -> Maybe value -> Html msg
 radioCommon inline items msg current =
     div
         [ Attr.class "fr-form-group"
