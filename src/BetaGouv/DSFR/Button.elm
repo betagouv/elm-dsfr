@@ -1,9 +1,10 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, ButtonSize(..), ButtonType(..), IconPosition(..), MandatoryButtonConfig, OptionalButtonConfig, buttonSize, buttonType, defaultOptions, disable, iconAttr, large, linkButton, new, reset, secondary, small, submit, view, withAttrs, withDisabled, withIcon, withOptions, withPrimary, withSize, withType)
+module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, buttonSize, buttonType, defaultOptions, disable, iconAttr, large, leftIcon, linkButton, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, small, submit, tertiary, tertiaryNoOutline, view, withAttrs, withDisabled, withOptions)
 
 import Accessibility as Html exposing (Attribute, Html)
+import BetaGouv.DSFR.Icon exposing (IconName)
 import Html as Root
-import Html.Attributes as Attr
-import Html.Attributes.Extra
+import Html.Attributes as Attr exposing (class)
+import Html.Attributes.Extra exposing (empty)
 import Html.Events as Events
 
 
@@ -18,15 +19,29 @@ view { mandatory, optional } =
         { label, onClick } =
             mandatory
 
-        { disabled, type_, icon, size, primary, extraAttrs } =
+        { disabled, type_, icon, size, importance, extraAttrs } =
             optional
 
         ( node, buttonTypeAttrs ) =
             buttonType type_
+
+        importanceClass =
+            case importance of
+                Primary ->
+                    empty
+
+                Secondary ->
+                    class "fr-btn--secondary"
+
+                Tertiary With ->
+                    class "fr-btn--tertiary"
+
+                Tertiary Without ->
+                    class "fr-btn--tertiary-no-outline"
     in
     node
         (Attr.class "fr-btn"
-            :: Attr.classList [ ( "fr-btn--secondary", not primary ) ]
+            :: importanceClass
             :: Attr.disabled disabled
             :: iconAttr icon
             :: buttonSize size
@@ -57,7 +72,7 @@ type alias OptionalButtonConfig msg =
     , type_ : ButtonType
     , size : ButtonSize
     , icon : IconPosition
-    , primary : Bool
+    , importance : Importance
     , extraAttrs : List (Attribute msg)
     }
 
@@ -77,9 +92,20 @@ type ButtonSize
 
 type IconPosition
     = NoIcon
-    | LeftIcon String
-    | RightIcon String
-    | OnlyIcon String
+    | LeftIcon IconName
+    | RightIcon IconName
+    | OnlyIcon IconName
+
+
+type Importance
+    = Primary
+    | Secondary
+    | Tertiary Outline
+
+
+type Outline
+    = With
+    | Without
 
 
 withOptions : OptionalButtonConfig msg -> ButtonConfig msg -> ButtonConfig msg
@@ -97,14 +123,34 @@ withSize size { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | size = size } }
 
 
-withPrimary : Bool -> ButtonConfig msg -> ButtonConfig msg
-withPrimary primary { mandatory, optional } =
-    { mandatory = mandatory, optional = { optional | primary = primary } }
+withImportance : Importance -> ButtonConfig msg -> ButtonConfig msg
+withImportance importance { mandatory, optional } =
+    { mandatory = mandatory, optional = { optional | importance = importance } }
 
 
 withIcon : IconPosition -> ButtonConfig msg -> ButtonConfig msg
 withIcon icon { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | icon = icon } }
+
+
+noIcon : ButtonConfig msg -> ButtonConfig msg
+noIcon =
+    withIcon NoIcon
+
+
+leftIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
+leftIcon =
+    withIcon << LeftIcon
+
+
+rightIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
+rightIcon =
+    withIcon << RightIcon
+
+
+onlyIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
+onlyIcon =
+    withIcon << OnlyIcon
 
 
 withDisabled : Bool -> ButtonConfig msg -> ButtonConfig msg
@@ -115,6 +161,16 @@ withDisabled disabled { mandatory, optional } =
 withAttrs : List (Attribute msg) -> ButtonConfig msg -> ButtonConfig msg
 withAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
+
+
+regular : ButtonConfig msg -> ButtonConfig msg
+regular =
+    clickable
+
+
+clickable : ButtonConfig msg -> ButtonConfig msg
+clickable =
+    withType ClickableBtn
 
 
 submit : ButtonConfig msg -> ButtonConfig msg
@@ -132,14 +188,34 @@ linkButton href =
     withType <| LinkButton href
 
 
+primary : ButtonConfig msg -> ButtonConfig msg
+primary =
+    withImportance Primary
+
+
 secondary : ButtonConfig msg -> ButtonConfig msg
 secondary =
-    withPrimary False
+    withImportance Secondary
+
+
+tertiary : ButtonConfig msg -> ButtonConfig msg
+tertiary =
+    withImportance <| Tertiary With
+
+
+tertiaryNoOutline : ButtonConfig msg -> ButtonConfig msg
+tertiaryNoOutline =
+    withImportance <| Tertiary Without
 
 
 small : ButtonConfig msg -> ButtonConfig msg
 small =
     withSize SmallBtn
+
+
+medium : ButtonConfig msg -> ButtonConfig msg
+medium =
+    withSize MediumBtn
 
 
 large : ButtonConfig msg -> ButtonConfig msg
@@ -158,7 +234,7 @@ defaultOptions =
     , type_ = ClickableBtn
     , size = MediumBtn
     , icon = NoIcon
-    , primary = True
+    , importance = Primary
     , extraAttrs = []
     }
 
@@ -183,16 +259,16 @@ iconAttr : IconPosition -> Attribute msg
 iconAttr icon =
     case icon of
         NoIcon ->
-            Html.Attributes.Extra.empty
+            empty
 
         LeftIcon iconName ->
-            Attr.classList [ ( iconName, True ), ( "fr-btn--icon-left", True ) ]
+            Attr.classList [ ( DSFR.Icon.toClassName iconName, True ), ( "fr-btn--icon-left", True ) ]
 
         RightIcon iconName ->
-            Attr.classList [ ( iconName, True ), ( "fr-btn--icon-right", True ) ]
+            Attr.classList [ ( DSFR.Icon.toClassName iconName, True ), ( "fr-btn--icon-right", True ) ]
 
         OnlyIcon iconName ->
-            Attr.class iconName
+            Attr.class <| DSFR.Icon.toClassName iconName
 
 
 buttonSize : ButtonSize -> Attribute msg
