@@ -1,7 +1,11 @@
-module BetaGouv.DSFR.Alert exposing (alert, error, info, success, warning)
+module BetaGouv.DSFR.Alert exposing (alert, error, info, medium, small, success, warning)
 
-import Accessibility as Html
-import Html.Attributes as Attr
+import Accessibility exposing (Html, button, div, p, text)
+import Accessibility.Role
+import Html.Attributes exposing (class)
+import Html.Attributes.Extra exposing (empty)
+import Html.Events as Events
+import Html.Extra exposing (viewMaybe)
 
 
 type AlertType
@@ -11,9 +15,37 @@ type AlertType
     | Warning
 
 
-alert type_ { title, description } =
+type AlertSize
+    = SM { title : Maybe String, description : String }
+    | MD { title : String, description : Maybe String }
+
+
+type alias AlertConfig msg =
+    Maybe msg
+
+
+small : { title : Maybe String, description : String } -> AlertSize
+small =
+    SM
+
+
+medium : { title : String, description : Maybe String } -> AlertSize
+medium =
+    MD
+
+
+alert : AlertConfig msg -> AlertType -> AlertSize -> Html msg
+alert closeMsg type_ size =
     let
-        class =
+        ( sizeClass, title, description ) =
+            case size of
+                SM sm ->
+                    ( class "fr-alert--sm", sm.title, Just sm.description )
+
+                MD md ->
+                    ( empty, Just md.title, md.description )
+
+        alertClass =
             case type_ of
                 Error ->
                     "error"
@@ -27,33 +59,50 @@ alert type_ { title, description } =
                 Warning ->
                     "warning"
     in
-    Html.div
-        [ Attr.class <| "fr-alert fr-alert--" ++ class
+    div
+        [ class <| "fr-alert fr-alert--" ++ alertClass
+        , sizeClass
+        , Accessibility.Role.alert
         ]
-        [ Html.p
-            [ Attr.class "fr-alert__title"
-            ]
-            [ Html.text title ]
-        , Html.p []
-            [ Html.text description ]
+        [ viewMaybe
+            (\t ->
+                p [ class "fr-alert__title" ]
+                    [ text t ]
+            )
+            title
+        , viewMaybe
+            (\d ->
+                p []
+                    [ text d ]
+            )
+            description
+        , viewMaybe
+            (\close ->
+                button
+                    [ class "fr-link--close fr-link"
+                    , Events.onClick close
+                    ]
+                    [ text "Masquer le message" ]
+            )
+            closeMsg
         ]
 
 
-error : { a | title : String, description : String } -> Html.Html msg
+error : AlertType
 error =
-    alert Error
+    Error
 
 
-success : { a | title : String, description : String } -> Html.Html msg
+success : AlertType
 success =
-    alert Success
+    Success
 
 
-info : { a | title : String, description : String } -> Html.Html msg
+info : AlertType
 info =
-    alert Info
+    Info
 
 
-warning : { a | title : String, description : String } -> Html.Html msg
+warning : AlertType
 warning =
-    alert Warning
+    Warning
