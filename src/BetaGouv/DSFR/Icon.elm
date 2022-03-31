@@ -135,6 +135,8 @@ module BetaGouv.DSFR.Icon exposing
     , themeFill
     , tiktokFill
     , tiktokLine
+    , toClass
+    , toClassName
     , twitchFill
     , twitchLine
     , twitterFill
@@ -161,7 +163,7 @@ module BetaGouv.DSFR.Icon exposing
     , zoomOutLine
     )
 
-import Accessibility exposing (Html, span)
+import Accessibility exposing (Attribute, Html, span)
 import Html.Attributes exposing (attribute, class)
 
 
@@ -176,7 +178,7 @@ type IconSize
 
 
 genericIcon : IconSize -> IconName -> Html msg
-genericIcon size (IconName iconName) =
+genericIcon size iconName =
     let
         iconSize =
             case size of
@@ -190,11 +192,21 @@ genericIcon size (IconName iconName) =
                     "fr-fi--xl"
     in
     span
-        [ class iconName
+        [ toClass iconName
         , class iconSize
         , attribute "aria-hidden" "true"
         ]
         []
+
+
+toClass : IconName -> Attribute msg
+toClass =
+    class << toClassName
+
+
+toClassName : IconName -> String
+toClassName (IconName iconName) =
+    iconName
 
 
 icon : IconName -> Html msg

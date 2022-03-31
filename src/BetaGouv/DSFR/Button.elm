@@ -1,15 +1,221 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, ButtonSize(..), ButtonType(..), IconPosition(..), MandatoryButtonConfig, OptionalButtonConfig, buttonSize, buttonType, defaultOptions, disable, iconAttr, large, linkButton, new, reset, secondary, small, submit, view, withAttrs, withDisabled, withIcon, withOptions, withPrimary, withSize, withType)
+module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions, groupSmall, groupLarge)
 
-import Accessibility as Html exposing (Attribute, Html)
+import Accessibility exposing (Attribute, Html, button, li, text, ul)
+import BetaGouv.DSFR.Icon exposing (IconName)
 import Html as Root
-import Html.Attributes as Attr
-import Html.Attributes.Extra
+import Html.Attributes as Attr exposing (class)
+import Html.Attributes.Extra exposing (empty)
 import Html.Events as Events
 
 
-new : MandatoryButtonConfig msg -> ButtonConfig msg
-new mandatory =
+type Size
+    = SM
+    | MD
+    | LG
+
+
+groupSmall : GroupConfig msg -> GroupConfig msg
+groupSmall config =
+    { config | size = SM }
+
+
+groupLarge : GroupConfig msg -> GroupConfig msg
+groupLarge config =
+    { config | size = LG }
+
+
+type Orientation
+    = Stacked
+    | Inline
+    | InlineFrom Breakpoint
+
+
+type Breakpoint
+    = BreakpointSM
+    | BreakpointMD
+    | BreakpointLG
+
+
+breakpointSM : Breakpoint
+breakpointSM =
+    BreakpointSM
+
+
+breakpointMD : Breakpoint
+breakpointMD =
+    BreakpointMD
+
+
+breakpointLG : Breakpoint
+breakpointLG =
+    BreakpointLG
+
+
+inline : GroupConfig msg -> GroupConfig msg
+inline config =
+    { config | orientation = Inline }
+
+
+inlineFrom : Breakpoint -> GroupConfig msg -> GroupConfig msg
+inlineFrom breakpoint config =
+    { config | orientation = InlineFrom breakpoint }
+
+
+type Placement
+    = Left
+    | Center
+    | RightNormal
+    | RightInverted
+
+
+alignedCenter : GroupConfig msg -> GroupConfig msg
+alignedCenter config =
+    { config | placement = Center }
+
+
+alignedRight : GroupConfig msg -> GroupConfig msg
+alignedRight config =
+    { config | placement = RightNormal }
+
+
+alignedRightInverted : GroupConfig msg -> GroupConfig msg
+alignedRightInverted config =
+    { config | placement = RightInverted }
+
+
+type GroupIcon
+    = LeftI
+    | RightI
+    | NoI
+
+
+iconsLeft : GroupConfig msg -> GroupConfig msg
+iconsLeft config =
+    { config | icons = LeftI }
+
+
+iconsRight : GroupConfig msg -> GroupConfig msg
+iconsRight config =
+    { config | icons = RightI }
+
+
+type alias GroupConfig msg =
+    { buttons : List (ButtonConfig msg)
+    , size : Size
+    , orientation : Orientation
+    , placement : Placement
+    , icons : GroupIcon
+    , equisized : Bool
+    }
+
+
+group : List (ButtonConfig msg) -> GroupConfig msg
+group buttons =
+    { buttons = buttons
+    , size = MD
+    , orientation = Stacked
+    , placement = Left
+    , icons = NoI
+    , equisized = False
+    }
+
+
+addBefore : ButtonConfig msg -> GroupConfig msg -> GroupConfig msg
+addBefore button config =
+    { config | buttons = button :: config.buttons }
+
+
+addAfter : ButtonConfig msg -> GroupConfig msg -> GroupConfig msg
+addAfter button config =
+    { config | buttons = config.buttons ++ [ button ] }
+
+
+viewGroup : GroupConfig msg -> Html msg
+viewGroup { buttons, size, orientation, placement, icons, equisized } =
+    let
+        orientationClass =
+            case orientation of
+                Stacked ->
+                    empty
+
+                Inline ->
+                    class "fr-btns-group--inline"
+
+                InlineFrom breakpoint ->
+                    case breakpoint of
+                        BreakpointSM ->
+                            class "fr-btns-group--inline-sm"
+
+                        BreakpointMD ->
+                            class "fr-btns-group--inline-md"
+
+                        BreakpointLG ->
+                            class "fr-btns-group--inline-lg"
+
+        sizeClass =
+            case size of
+                SM ->
+                    class "fr-btns-group--sm"
+
+                MD ->
+                    empty
+
+                LG ->
+                    class "fr-btns-group--lg"
+
+        placementClass =
+            case placement of
+                Left ->
+                    [ empty ]
+
+                Center ->
+                    [ class "fr-btns-group--center" ]
+
+                RightNormal ->
+                    [ class "fr-btns-group--right" ]
+
+                RightInverted ->
+                    [ class "fr-btns-group--right", class "fr-btns-group--inline-reverse" ]
+
+        equisizedClass =
+            if equisized then
+                class "fr-btns-group--equisized"
+
+            else
+                empty
+
+        iconsClass =
+            case icons of
+                NoI ->
+                    empty
+
+                LeftI ->
+                    class "fr-btns-group--icon-left"
+
+                RightI ->
+                    class "fr-btns-group--icon-right"
+    in
+    ul
+        (class "fr-btns-group"
+            :: sizeClass
+            :: orientationClass
+            :: equisizedClass
+            :: iconsClass
+            :: placementClass
+        )
+    <|
+        List.map (li [] << List.singleton << view << withSize None) <|
+            buttons
+
+
+single : MandatoryButtonConfig msg -> ButtonConfig msg
+single mandatory =
     { mandatory = mandatory, optional = defaultOptions }
+
+
+new : MandatoryButtonConfig msg -> ButtonConfig msg
+new =
+    single
 
 
 view : ButtonConfig msg -> Html msg
@@ -18,26 +224,40 @@ view { mandatory, optional } =
         { label, onClick } =
             mandatory
 
-        { disabled, type_, icon, size, primary, extraAttrs } =
+        { disabled, type_, icon, size, importance, extraAttrs } =
             optional
 
         ( node, buttonTypeAttrs ) =
             buttonType type_
+
+        importanceClass =
+            case importance of
+                Primary ->
+                    empty
+
+                Secondary ->
+                    class "fr-btn--secondary"
+
+                Tertiary With ->
+                    class "fr-btn--tertiary"
+
+                Tertiary Without ->
+                    class "fr-btn--tertiary-no-outline"
     in
     node
-        (Attr.class "fr-btn"
-            :: Attr.classList [ ( "fr-btn--secondary", not primary ) ]
+        (class "fr-btn"
+            :: importanceClass
             :: Attr.disabled disabled
-            :: iconAttr icon
             :: buttonSize size
             :: (onClick
                     |> Maybe.map Events.onClick
                     |> Maybe.withDefault Html.Attributes.Extra.empty
                )
             :: buttonTypeAttrs
-            :: extraAttrs
+            :: iconAttr label icon
+            ++ extraAttrs
         )
-        [ Html.text label ]
+        [ text label ]
 
 
 type alias ButtonConfig msg =
@@ -57,7 +277,7 @@ type alias OptionalButtonConfig msg =
     , type_ : ButtonType
     , size : ButtonSize
     , icon : IconPosition
-    , primary : Bool
+    , importance : Importance
     , extraAttrs : List (Attribute msg)
     }
 
@@ -70,16 +290,28 @@ type ButtonType
 
 
 type ButtonSize
-    = SmallBtn
-    | MediumBtn
-    | LargeBtn
+    = Small
+    | Medium
+    | Large
+    | None
 
 
 type IconPosition
     = NoIcon
-    | LeftIcon String
-    | RightIcon String
-    | OnlyIcon String
+    | LeftIcon IconName
+    | RightIcon IconName
+    | OnlyIcon IconName
+
+
+type Importance
+    = Primary
+    | Secondary
+    | Tertiary Outline
+
+
+type Outline
+    = With
+    | Without
 
 
 withOptions : OptionalButtonConfig msg -> ButtonConfig msg -> ButtonConfig msg
@@ -97,14 +329,34 @@ withSize size { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | size = size } }
 
 
-withPrimary : Bool -> ButtonConfig msg -> ButtonConfig msg
-withPrimary primary { mandatory, optional } =
-    { mandatory = mandatory, optional = { optional | primary = primary } }
+withImportance : Importance -> ButtonConfig msg -> ButtonConfig msg
+withImportance importance { mandatory, optional } =
+    { mandatory = mandatory, optional = { optional | importance = importance } }
 
 
 withIcon : IconPosition -> ButtonConfig msg -> ButtonConfig msg
 withIcon icon { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | icon = icon } }
+
+
+noIcon : ButtonConfig msg -> ButtonConfig msg
+noIcon =
+    withIcon NoIcon
+
+
+leftIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
+leftIcon =
+    withIcon << LeftIcon
+
+
+rightIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
+rightIcon =
+    withIcon << RightIcon
+
+
+onlyIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
+onlyIcon =
+    withIcon << OnlyIcon
 
 
 withDisabled : Bool -> ButtonConfig msg -> ButtonConfig msg
@@ -115,6 +367,16 @@ withDisabled disabled { mandatory, optional } =
 withAttrs : List (Attribute msg) -> ButtonConfig msg -> ButtonConfig msg
 withAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
+
+
+regular : ButtonConfig msg -> ButtonConfig msg
+regular =
+    clickable
+
+
+clickable : ButtonConfig msg -> ButtonConfig msg
+clickable =
+    withType ClickableBtn
 
 
 submit : ButtonConfig msg -> ButtonConfig msg
@@ -132,19 +394,39 @@ linkButton href =
     withType <| LinkButton href
 
 
+primary : ButtonConfig msg -> ButtonConfig msg
+primary =
+    withImportance Primary
+
+
 secondary : ButtonConfig msg -> ButtonConfig msg
 secondary =
-    withPrimary False
+    withImportance Secondary
+
+
+tertiary : ButtonConfig msg -> ButtonConfig msg
+tertiary =
+    withImportance <| Tertiary With
+
+
+tertiaryNoOutline : ButtonConfig msg -> ButtonConfig msg
+tertiaryNoOutline =
+    withImportance <| Tertiary Without
 
 
 small : ButtonConfig msg -> ButtonConfig msg
 small =
-    withSize SmallBtn
+    withSize Small
+
+
+medium : ButtonConfig msg -> ButtonConfig msg
+medium =
+    withSize Medium
 
 
 large : ButtonConfig msg -> ButtonConfig msg
 large =
-    withSize LargeBtn
+    withSize Large
 
 
 disable : ButtonConfig msg -> ButtonConfig msg
@@ -156,9 +438,9 @@ defaultOptions : OptionalButtonConfig msg
 defaultOptions =
     { disabled = False
     , type_ = ClickableBtn
-    , size = MediumBtn
+    , size = Medium
     , icon = NoIcon
-    , primary = True
+    , importance = Primary
     , extraAttrs = []
     }
 
@@ -167,42 +449,45 @@ buttonType : ButtonType -> ( List (Attribute msg) -> List (Html msg) -> Html msg
 buttonType type_ =
     case type_ of
         SubmitBtn ->
-            ( Html.button, Attr.type_ "submit" )
+            ( button, Attr.type_ "submit" )
 
         ResetBtn ->
-            ( Html.button, Attr.type_ "reset" )
+            ( button, Attr.type_ "reset" )
 
         ClickableBtn ->
-            ( Html.button, Attr.type_ "button" )
+            ( button, Attr.type_ "button" )
 
         LinkButton href ->
             ( Root.a, Attr.href href )
 
 
-iconAttr : IconPosition -> Attribute msg
-iconAttr icon =
+iconAttr : String -> IconPosition -> List (Attribute msg)
+iconAttr label icon =
     case icon of
         NoIcon ->
-            Html.Attributes.Extra.empty
+            [ empty ]
 
         LeftIcon iconName ->
-            Attr.classList [ ( iconName, True ), ( "fr-btn--icon-left", True ) ]
+            [ DSFR.Icon.toClass iconName, class "fr-btn--icon-left" ]
 
         RightIcon iconName ->
-            Attr.classList [ ( iconName, True ), ( "fr-btn--icon-right", True ) ]
+            [ DSFR.Icon.toClass iconName, class "fr-btn--icon-right" ]
 
         OnlyIcon iconName ->
-            Attr.class iconName
+            [ DSFR.Icon.toClass iconName, Attr.title label ]
 
 
 buttonSize : ButtonSize -> Attribute msg
 buttonSize size =
     case size of
-        SmallBtn ->
-            Attr.class "fr-btn--sm"
+        None ->
+            empty
 
-        MediumBtn ->
+        Small ->
+            class "fr-btn--sm"
+
+        Medium ->
             Html.Attributes.Extra.empty
 
-        LargeBtn ->
-            Attr.class "fr-btn--lg"
+        Large ->
+            class "fr-btn--lg"
