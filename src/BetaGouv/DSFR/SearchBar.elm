@@ -51,9 +51,11 @@ genericSearchBar size { submitMsg, inputMsg, buttonLabel, inputLabel, inputPlace
         ]
 
 
+searchBar : { submitMsg : msg, inputMsg : String -> msg, buttonLabel : String, inputLabel : String, inputPlaceholder : String, inputId : String, inputValue : String } -> Html msg
 searchBar =
     genericSearchBar MD
 
 
+searchBarLG : { submitMsg : msg, inputMsg : String -> msg, buttonLabel : String, inputLabel : String, inputPlaceholder : String, inputId : String, inputValue : String } -> Html msg
 searchBarLG =
     genericSearchBar LG
