@@ -3,6 +3,7 @@ module BetaGouv.DSFR.Checkbox exposing (CheckboxConfig, GroupConfig, MandatoryCo
 import Accessibility exposing (Html, checkbox, div, fieldset, legend, p, span, text)
 import Accessibility.Aria exposing (describedBy, labelledBy)
 import Accessibility.Role
+import BetaGouv.DSFR.Typography as Typo
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (attributeMaybe, empty)
 import Html.Events as Events
@@ -182,7 +183,8 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
                         ]
             ]
             [ legend
-                [ class "fr-fieldset__legend fr-text--regular"
+                [ class "fr-fieldset__legend"
+                , Typo.textRegular
                 , Attr.id <| id ++ "-legend"
                 ]
                 [ text label

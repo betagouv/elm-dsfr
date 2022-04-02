@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Card exposing (card, link, linkFull, view, withArrow, withDescription, withDetails, withImage)
+module BetaGouv.DSFR.Card exposing (card, horizontal, link, linkFull, vertical, view, withArrow, withDescription, withDetails, withImage)
 
 import Accessibility exposing (Html, a, decorativeImg, div, h4, p, text)
 import Html.Attributes as Attr exposing (class)
@@ -7,7 +7,7 @@ import Html.Extra exposing (viewMaybe)
 
 
 type alias CardConfig msg =
-    ( String, Options msg )
+    ( String, Orientation, Options msg )
 
 
 type alias Options msg =
@@ -36,43 +36,53 @@ type Orientation
     | Vertical
 
 
-link : String -> Options msg -> Options msg
-link href options =
-    { options | href = Just href }
+link : String -> CardConfig msg -> CardConfig msg
+link href ( t, o, options ) =
+    ( t, o, { options | href = Just href } )
 
 
-linkFull : String -> Options msg -> Options msg
-linkFull href options =
-    { options | href = Just href, fullLink = True }
+linkFull : String -> CardConfig msg -> CardConfig msg
+linkFull href ( t, o, options ) =
+    ( t, o, { options | href = Just href, fullLink = True } )
 
 
-withImage : Maybe String -> Options msg -> Options msg
-withImage src options =
-    { options | imageSrc = src }
+withImage : Maybe String -> CardConfig msg -> CardConfig msg
+withImage src ( t, o, options ) =
+    ( t, o, { options | imageSrc = src } )
 
 
-withArrow : Bool -> Options msg -> Options msg
-withArrow arrow options =
-    { options | arrow = arrow }
+withArrow : Bool -> CardConfig msg -> CardConfig msg
+withArrow arrow ( t, o, options ) =
+    ( t, o, { options | arrow = arrow } )
 
 
-withDescription : Maybe (Html msg) -> Options msg -> Options msg
-withDescription description options =
-    { options | description = description }
+withDescription : Maybe (Html msg) -> CardConfig msg -> CardConfig msg
+withDescription description ( t, o, options ) =
+    ( t, o, { options | description = description } )
 
 
-withDetails : Maybe (Html msg) -> Options msg -> Options msg
-withDetails details options =
-    { options | details = details }
+withDetails : Maybe (Html msg) -> CardConfig msg -> CardConfig msg
+withDetails details ( t, o, options ) =
+    ( t, o, { options | details = details } )
 
 
-card : String -> CardConfig msg
-card title =
-    ( title, defaultOptions )
+vertical : Orientation
+vertical =
+    Vertical
 
 
-view : Orientation -> CardConfig msg -> Html msg
-view orientation ( title, { href, fullLink, imageSrc, description, details, arrow } ) =
+horizontal : Orientation
+horizontal =
+    Horizontal
+
+
+card : String -> Orientation -> CardConfig msg
+card title orientation =
+    ( title, orientation, defaultOptions )
+
+
+view : CardConfig msg -> Html msg
+view ( title, orientation, { href, fullLink, imageSrc, description, details, arrow } ) =
     let
         orientationClass =
             case orientation of
