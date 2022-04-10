@@ -1,6 +1,6 @@
-module BetaGouv.DSFR.Checkbox exposing (CheckboxConfig, GroupConfig, MandatoryConfig, MandatoryGroupConfig, OptionalConfig, OptionalGroupConfig, Orientation, defaultOptionalConfig, defaultOptionalGroupConfig, group, groupWithDisabled, groupWithError, groupWithHint, groupWithOrientation, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess, horizontal, inline, single, singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess, stacked, vertical, viewGroup, viewSingle)
+module BetaGouv.DSFR.Checkbox exposing (CheckboxConfig, GroupConfig, MandatoryConfig, MandatoryGroupConfig, OptionalConfig, OptionalGroupConfig, Orientation, defaultOptionalConfig, defaultOptionalGroupConfig, group, groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithOrientation, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess, horizontal, inline, single, singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess, stacked, vertical, viewGroup, viewSingle)
 
-import Accessibility exposing (Html, checkbox, div, fieldset, legend, p, span, text)
+import Accessibility exposing (Attribute, Html, checkbox, div, fieldset, legend, p, span, text)
 import Accessibility.Aria exposing (describedBy, labelledBy)
 import Accessibility.Role
 import BetaGouv.DSFR.Typography as Typo
@@ -126,6 +126,7 @@ type alias OptionalGroupConfig data =
     , toDisabled : data -> Bool
     , toError : data -> Maybe String
     , toSuccess : data -> Maybe String
+    , extraAttrs : List (Attribute Never)
     }
 
 
@@ -140,6 +141,7 @@ defaultOptionalGroupConfig =
     , toDisabled = always False
     , toError = always Nothing
     , toSuccess = always Nothing
+    , extraAttrs = []
     }
 
 
@@ -154,7 +156,7 @@ group config =
 
 
 viewGroup : GroupConfig msg data -> Html msg
-viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabel }, { hint, disabled, error, success, orientation, toHint, toDisabled, toError, toSuccess } ) =
+viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabel }, { hint, disabled, error, success, orientation, toHint, toDisabled, toError, toSuccess, extraAttrs } ) =
     let
         inlineClass =
             case orientation of
@@ -164,7 +166,10 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
                 Vertical ->
                     empty
     in
-    div [ class "fr-form-group" ]
+    div
+        (class "fr-form-group"
+            :: extraAttrs
+        )
         [ fieldset
             [ class "fr-fieldset"
             , Attr.id id
@@ -278,3 +283,8 @@ groupWithToError toError ( mandatory, optional ) =
 groupWithToSuccess : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithToSuccess toSuccess ( mandatory, optional ) =
     ( mandatory, { optional | toSuccess = toSuccess } )
+
+
+groupWithExtraAttrs : List (Attribute Never) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithExtraAttrs extraAttrs ( mandatory, optional ) =
+    ( mandatory, { optional | extraAttrs = extraAttrs } )
