@@ -1,6 +1,6 @@
 module BetaGouv.DSFR.Badge exposing (..)
 
-import Accessibility exposing (Attribute, Html, li, p, text, ul)
+import Accessibility exposing (Attribute, Html, div, li, p, text, ul)
 import Html.Attributes exposing (class)
 import Html.Attributes.Extra exposing (empty)
 import Html.Extra exposing (static)
@@ -171,10 +171,13 @@ view size config =
                 System { label } attrs ->
                     ( label, attrs )
     in
-    p
-        (sizeAttr
-            :: colorAttrs
-            :: iconAttrs
-            :: extraAttrs
-        )
-        [ content ]
+    div [] <|
+        [ p
+            (class "fr-badge"
+                :: sizeAttr
+                :: colorAttrs
+                :: iconAttrs
+                :: extraAttrs
+            )
+            [ content ]
+        ]
