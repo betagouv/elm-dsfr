@@ -60,12 +60,12 @@ type Icon
     | RightIcon IconName
 
 
-unclickable : MandatoryConfig data -> TagConfig Never data
+unclickable : MandatoryConfig data -> TagConfig msg data
 unclickable label =
     ( label, Unclickable, defaultOptions )
 
 
-clickable : String -> MandatoryConfig data -> TagConfig Never data
+clickable : String -> MandatoryConfig data -> TagConfig msg data
 clickable link label =
     ( label, Clickable (Href link), defaultOptions )
 
