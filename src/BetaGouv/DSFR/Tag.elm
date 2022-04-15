@@ -3,7 +3,7 @@ module BetaGouv.DSFR.Tag exposing (..)
 import Accessibility exposing (Attribute, Html, a, button, li, p, text, ul)
 import Accessibility.Aria exposing (pressed)
 import BetaGouv.DSFR.Icon exposing (IconName)
-import Html.Attributes exposing (class, href)
+import Html.Attributes exposing (class, href, type_)
 import Html.Attributes.Extra exposing (empty)
 import Html.Events exposing (onClick)
 
@@ -128,6 +128,7 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
         Selectable (Checked checked) msg ->
             button
                 ((onClick <| msg data)
+                    :: type_ "button"
                     :: (pressed <| Just checked)
                     :: sizeAttrs
                     :: List.map Html.Attributes.Extra.static extraAttrs
@@ -137,6 +138,7 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
         Deletable msg ->
             button
                 ((onClick <| msg data)
+                    :: type_ "button"
                     :: tagAttrs
                     :: sizeAttrs
                     :: class "fr-tag--dismiss"
