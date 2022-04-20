@@ -183,7 +183,7 @@ genericIcon size iconName =
         iconSize =
             case size of
                 MD ->
-                    ""
+                    "fr-fi"
 
                 LG ->
                     "fr-fi--lg"
@@ -231,7 +231,8 @@ iconXL =
 
 custom : String -> IconName
 custom =
-    IconName
+    (++) "text-[1.5rem] "
+    >> IconName
 
 
 successFill : IconName
