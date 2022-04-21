@@ -1,6 +1,6 @@
 module BetaGouv.DSFR.Modal exposing (Config, view)
 
-import Accessibility exposing (Html, button, div, h1, li, text, ul)
+import Accessibility exposing (Html, div, h1)
 import Accessibility.Aria exposing (controls, labelledBy)
 import Accessibility.Role exposing (dialog)
 import BetaGouv.DSFR.Button
@@ -54,7 +54,7 @@ view config content footer =
                         [ class "fr-grid-row fr-grid-row--center"
                         ]
                         [ div
-                            [ class "fr-col-12 fr-col-md-8 fr-col-lg-6"
+                            [ class "fr-col-12 fr-col-md-11 fr-col-lg-10"
                             ]
                             [ div
                                 [ class "fr-modal__body"
