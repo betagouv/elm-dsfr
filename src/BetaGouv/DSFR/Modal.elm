@@ -55,7 +55,7 @@ view config content footer =
                         [ class "fr-grid-row fr-grid-row--center"
                         ]
                         [ div
-                            [ class "fr-col-12 fr-col-md-11 fr-col-lg-10"
+                            [ class "fr-col-12 fr-col-md-11 fr-col-lg-10 fr-col-xl-9"
                             ]
                             [ div
                                 [ class "fr-modal__body"
