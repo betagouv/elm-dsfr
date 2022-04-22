@@ -4,7 +4,8 @@ import Accessibility exposing (Html, div, h1)
 import Accessibility.Aria exposing (controls, labelledBy)
 import Accessibility.Role exposing (dialog)
 import BetaGouv.DSFR.Button
-import BetaGouv.DSFR.Icon
+import BetaGouv.DSFR.Icons
+import BetaGouv.DSFR.Icons.System
 import Html exposing (node)
 import Html.Attributes as Attr exposing (class)
 import Html.Extra exposing (viewMaybe)
@@ -54,7 +55,7 @@ view config content footer =
                         [ class "fr-grid-row fr-grid-row--center"
                         ]
                         [ div
-                            [ class "fr-col-12 fr-col-md-11 fr-col-lg-10"
+                            [ class "fr-col-12 fr-col-md-11 fr-col-lg-10 fr-col-xl-9"
                             ]
                             [ div
                                 [ class "fr-modal__body"
@@ -70,7 +71,7 @@ view config content footer =
                                             [ Attr.title "Fermer la fenêtre modale"
                                             , Attr.attribute "aria-controls" modalId
                                             ]
-                                        |> DSFR.Button.rightIcon DSFR.Icon.closeLine
+                                        |> DSFR.Button.rightIcon DSFR.Icons.System.closeLine
                                         |> DSFR.Button.tertiaryNoOutline
                                         |> DSFR.Button.small
                                         |> DSFR.Button.view

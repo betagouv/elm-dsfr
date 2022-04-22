@@ -2,7 +2,7 @@ module BetaGouv.DSFR.Tag exposing (..)
 
 import Accessibility exposing (Attribute, Html, a, button, li, p, text, ul)
 import Accessibility.Aria exposing (pressed)
-import BetaGouv.DSFR.Icon exposing (IconName)
+import BetaGouv.DSFR.Icons exposing (IconName)
 import Html.Attributes exposing (class, href, type_)
 import Html.Attributes.Extra exposing (empty)
 import Html.Events exposing (onClick)
@@ -100,10 +100,10 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
                     empty
 
                 LeftIcon iconName ->
-                    class <| "fr-tag--icon-left " ++ DSFR.Icon.toClassName iconName
+                    class <| "fr-tag--icon-left " ++ DSFR.Icons.toClassName iconName
 
                 RightIcon iconName ->
-                    class <| "fr-tag--icon-right " ++ DSFR.Icon.toClassName iconName
+                    class <| "fr-tag--icon-right " ++ DSFR.Icons.toClassName iconName
     in
     case tag of
         Unclickable ->
@@ -170,6 +170,6 @@ withAttrs extraAttrs ( mandatory, tag, optional ) =
     ( mandatory, tag, { optional | extraAttrs = extraAttrs } )
 
 
-withIcon : DSFR.Icon.IconName -> TagConfig msg data -> TagConfig msg data
+withIcon : DSFR.Icons.IconName -> TagConfig msg data -> TagConfig msg data
 withIcon iconName ( mandatory, tag, optional ) =
     ( mandatory, tag, { optional | icon = LeftIcon iconName } )
