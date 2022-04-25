@@ -1,14 +1,9 @@
 module BetaGouv.DSFR.Modal exposing (Config, view)
 
-import Accessibility exposing (Html, div, h1)
-import Accessibility.Aria exposing (controls, labelledBy)
-import Accessibility.Role exposing (dialog)
+import Accessibility exposing (Html, button, div, h1, span, text)
 import BetaGouv.DSFR.Button
-import BetaGouv.DSFR.Icons
-import BetaGouv.DSFR.Icons.System
 import Html exposing (node)
-import Html.Attributes as Attr exposing (class)
-import Html.Extra exposing (viewMaybe)
+import Html.Attributes as Attr
 
 
 type alias Config msg =
@@ -17,12 +12,11 @@ type alias Config msg =
     , openMsg : msg
     , closeMsg : msg
     , title : Html msg
-    , opened : Bool
     }
 
 
-view : Config msg -> Html msg -> Maybe (Html msg) -> ( Html msg, Html msg )
-view config content footer =
+view : Config msg -> Html msg -> ( Html msg, Html msg )
+view config content =
     let
         modalId =
             "modal-" ++ config.id
@@ -31,64 +25,57 @@ view config content footer =
             modalId ++ "-title"
 
         but =
-            DSFR.Button.new
-                { onClick = Just config.openMsg
-                , label = config.label
-                }
-                |> DSFR.Button.withAttrs [ controls [ modalId ] ]
+            DSFR.Button.new { onClick = Just config.openMsg, label = config.label }
+                |> DSFR.Button.withAttrs
+                    [ Attr.attribute "aria-controls" modalId
+                    ]
                 |> DSFR.Button.view
 
         modal =
             node "dialog"
-                [ dialog
-                , labelledBy modalTitleId
+                [ Attr.attribute "aria-labelledby" <| modalTitleId
+                , Attr.attribute "role" "dialog"
                 , Attr.id config.id
-                , Attr.classList
-                    [ ( "fr-modal", True )
-                    , ( "fr-modal--opened", config.opened )
-                    ]
+                , Attr.class "fr-modal"
                 ]
                 [ div
-                    [ class "fr-container fr-container--fluid fr-container-md"
+                    [ Attr.class "fr-container fr-container--fluid fr-container-md"
                     ]
                     [ div
-                        [ class "fr-grid-row fr-grid-row--center"
+                        [ Attr.class "fr-grid-row fr-grid-row--center"
                         ]
                         [ div
-                            [ class "fr-col-12 fr-col-md-11 fr-col-lg-10 fr-col-xl-9"
+                            [ Attr.class "fr-col-12 fr-col-md-8 fr-col-lg-6"
                             ]
                             [ div
-                                [ class "fr-modal__body"
+                                [ Attr.class "fr-modal__body"
                                 ]
                                 [ div
-                                    [ class "fr-modal__header flex flex-row justify-end"
+                                    [ Attr.class "fr-modal__header"
                                     ]
-                                    [ DSFR.Button.new
-                                        { label = ""
-                                        , onClick = Just config.closeMsg
-                                        }
-                                        |> DSFR.Button.withAttrs
-                                            [ Attr.title "Fermer la fenêtre modale"
-                                            , Attr.attribute "aria-controls" modalId
-                                            ]
-                                        |> DSFR.Button.rightIcon DSFR.Icons.System.closeLine
-                                        |> DSFR.Button.tertiaryNoOutline
-                                        |> DSFR.Button.small
-                                        |> DSFR.Button.view
+                                    [ button
+                                        [ Attr.class "fr-link--close fr-link"
+                                        , Attr.title "Fermer la fenêtre modale"
+                                        , Attr.attribute "aria-controls" modalId
+                                        ]
+                                        [ text "Fermer" ]
                                     ]
                                 , div
-                                    [ class "fr-modal__content"
+                                    [ Attr.class "fr-modal__content"
                                     ]
                                     [ h1
                                         [ Attr.id modalTitleId
-                                        , class "fr-modal__title"
+                                        , Attr.class "fr-modal__title"
                                         ]
-                                        [ config.title
+                                        [ span
+                                            [ Attr.class "fr-fi-arrow-right-line fr-fi--lg"
+                                            , Attr.attribute "aria-hidden" "true"
+                                            ]
+                                            []
+                                        , config.title
                                         ]
                                     , content
                                     ]
-                                , footer
-                                    |> viewMaybe (List.singleton >> div [ class "fr-modal__footer" ])
                                 ]
                             ]
                         ]

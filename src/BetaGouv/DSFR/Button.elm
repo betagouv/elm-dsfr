@@ -1,7 +1,7 @@
 module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions)
 
 import Accessibility exposing (Attribute, Html, button, li, text, ul)
-import BetaGouv.DSFR.Icons exposing (IconName)
+import BetaGouv.DSFR.Icon exposing (IconName)
 import Html as Root
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (empty)
@@ -468,13 +468,13 @@ iconAttr label icon =
             [ empty ]
 
         LeftIcon iconName ->
-            [ DSFR.Icons.toClass iconName, class "fr-btn--icon-left" ]
+            [ DSFR.Icon.toClass iconName, class "fr-btn--icon-left" ]
 
         RightIcon iconName ->
-            [ DSFR.Icons.toClass iconName, class "fr-btn--icon-right" ]
+            [ DSFR.Icon.toClass iconName, class "fr-btn--icon-right" ]
 
         OnlyIcon iconName ->
-            [ DSFR.Icons.toClass iconName, Attr.title label ]
+            [ DSFR.Icon.toClass iconName, Attr.title label ]
 
 
 buttonSize : ButtonSize -> Attribute msg

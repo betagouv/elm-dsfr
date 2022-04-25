@@ -132,7 +132,7 @@ view { mandatory, optional } =
             optional
 
         defaultInputAttrs =
-            [ Attr.class "fr-input"
+            [ Attr.class "fr-input h-full"
             , Attr.classList
                 [ ( "fr-input--valid", validMsg /= Nothing )
                 , ( "fr-input--error", errorMsg /= Nothing )

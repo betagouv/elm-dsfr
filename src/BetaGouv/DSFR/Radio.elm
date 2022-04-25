@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess)
+module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, withDisabled, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess)
 
 import Accessibility exposing (Attribute, Html, div, fieldset, label, p, text)
 import Accessibility.Aria exposing (labelledBy)
@@ -6,7 +6,7 @@ import Accessibility.Role
 import BetaGouv.DSFR.Grid
 import Html exposing (input)
 import Html.Attributes as Attr exposing (class)
-import Html.Attributes.Extra exposing (attributeMaybe, empty)
+import Html.Attributes.Extra exposing (attributeMaybe)
 import Html.Events as Events
 import Html.Extra exposing (static, viewMaybe)
 import Html.Keyed as Keyed
@@ -41,7 +41,6 @@ type alias OptionalConfig msg data =
     , success : Maybe String
     , orientation : Orientation
     , disabled : Bool
-    , disabledOption : data -> Bool
     , extraAttrs : List (Attribute Never)
     }
 
@@ -59,7 +58,6 @@ defaultOptions =
     , success = Nothing
     , orientation = Vertical
     , disabled = False
-    , disabledOption = \_ -> False
     , extraAttrs = []
     }
 
@@ -70,7 +68,7 @@ group mandatory =
 
 
 view : GroupConfig msg data -> Html msg
-view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs } ) =
+view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, extraAttrs } ) =
     let
         inlineAttrs =
             case orientation of
@@ -109,9 +107,6 @@ view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExt
                 List.map
                     (\option ->
                         let
-                            dis =
-                                disabledOption option
-
                             name =
                                 id ++ "-option-" ++ toId option
                         in
@@ -124,12 +119,7 @@ view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExt
                                 [ Attr.type_ "radio"
                                 , Attr.id <| name
                                 , Attr.checked (current == Just option)
-                                , if dis then
-                                    empty
-
-                                  else
-                                    Events.onClick <| msg <| option
-                                , Attr.disabled dis
+                                , Events.onClick <| msg <| option
                                 ]
                                 []
                             , static <|
@@ -182,11 +172,6 @@ withSuccess success ( mandatory, optional ) =
 withDisabled : Bool -> GroupConfig msg data -> GroupConfig msg data
 withDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
-
-
-withDisabledOption : (data -> Bool) -> GroupConfig msg data -> GroupConfig msg data
-withDisabledOption disabledFn ( mandatory, optional ) =
-    ( mandatory, { optional | disabledOption = disabledFn } )
 
 
 withExtraAttrs : List (Attribute Never) -> GroupConfig msg data -> GroupConfig msg data

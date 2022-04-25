@@ -45,9 +45,7 @@ module BetaGouv.DSFR.Typography exposing
     )
 
 import Accessibility exposing (Attribute, Html, a, text)
-import BetaGouv.DSFR.Icons
-import BetaGouv.DSFR.Icons.Document
-import BetaGouv.DSFR.Icons.System
+import BetaGouv.DSFR.Icon
 import Html.Attributes as Attr exposing (class)
 
 
@@ -205,8 +203,8 @@ externalLink href attrs children =
 
 type Icon
     = NoIcon
-    | LeftIcon DSFR.Icons.IconName
-    | RightIcon DSFR.Icons.IconName
+    | LeftIcon DSFR.Icon.IconName
+    | RightIcon DSFR.Icon.IconName
 
 
 type LinkSize
@@ -220,12 +218,12 @@ linkNoIcon =
     NoIcon
 
 
-linkLeftIcon : DSFR.Icons.IconName -> Icon
+linkLeftIcon : DSFR.Icon.IconName -> Icon
 linkLeftIcon =
     LeftIcon
 
 
-linkRightIcon : DSFR.Icons.IconName -> Icon
+linkRightIcon : DSFR.Icon.IconName -> Icon
 linkRightIcon =
     RightIcon
 
@@ -270,10 +268,10 @@ linkStandaloneHelper size icon href attrs children =
                     []
 
                 LeftIcon i ->
-                    [ class "fr-link--icon-left", DSFR.Icons.toClass i ]
+                    [ class "fr-link--icon-left", DSFR.Icon.toClass i ]
 
                 RightIcon i ->
-                    [ class "fr-link--icon-right", DSFR.Icons.toClass i ]
+                    [ class "fr-link--icon-right", DSFR.Icon.toClass i ]
     in
     a (Attr.href href :: class "fr-link" :: sizeAttr :: iconAttrs ++ attrs) children
 
@@ -300,7 +298,7 @@ scrollToTop =
 
 scrollToTopHelper : LinkSize -> Html msg
 scrollToTopHelper size =
-    linkStandaloneHelper size (linkLeftIcon DSFR.Icons.System.arrowUpFill) "#top" [] [ text "Haut de page" ]
+    linkStandaloneHelper size (linkLeftIcon DSFR.Icon.arrowUpFill) "#top" [] [ text "Haut de page" ]
 
 
 downloadLinkSM : String -> String -> String -> String -> Html msg
@@ -320,4 +318,4 @@ downloadLinkLG =
 
 downloadLinkHelper : LinkSize -> String -> String -> String -> String -> Html msg
 downloadLinkHelper size href label fileFormat fileSize =
-    linkStandaloneHelper size (linkLeftIcon DSFR.Icons.Document.fileDownloadLine) href [] [ text <| label ++ " (format " ++ fileFormat ++ " - " ++ fileSize ++ ")" ]
+    linkStandaloneHelper size (linkLeftIcon DSFR.Icon.fileDownloadLine) href [] [ text <| label ++ " (format " ++ fileFormat ++ " - " ++ fileSize ++ ")" ]
