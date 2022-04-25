@@ -1,11 +1,11 @@
-module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess)
+module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess)
 
-import Accessibility exposing (Attribute, Html, div, fieldset, label, p, text)
+import Accessibility exposing (Attribute, Html, decorativeImg, div, fieldset, label, p, span, text)
 import Accessibility.Aria exposing (labelledBy)
 import Accessibility.Role
 import BetaGouv.DSFR.Grid
 import Html exposing (input)
-import Html.Attributes as Attr exposing (class)
+import Html.Attributes as Attr exposing (class, classList)
 import Html.Attributes.Extra exposing (attributeMaybe, empty)
 import Html.Events as Events
 import Html.Extra exposing (static, viewMaybe)
@@ -70,7 +70,17 @@ group mandatory =
 
 
 view : GroupConfig msg data -> Html msg
-view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs } ) =
+view =
+    viewGeneric Nothing
+
+
+viewRich : (data -> String) -> GroupConfig msg data -> Html msg
+viewRich toSrc =
+    viewGeneric <| Just toSrc
+
+
+viewGeneric : Maybe (data -> String) -> GroupConfig msg data -> Html msg
+viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs } ) =
     let
         inlineAttrs =
             case orientation of
@@ -104,7 +114,9 @@ view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExt
             )
             [ Accessibility.legend
                 [ class "fr-fieldset__legend fr-text--regular" ]
-                [ legend ]
+                [ legend
+                , viewMaybe (List.singleton >> span [ class "fr-hint-text" ]) legendExtra
+                ]
             , Keyed.node "div" [ class "fr-fieldset__content my-4", DSFR.Grid.col ] <|
                 List.map
                     (\option ->
@@ -118,6 +130,7 @@ view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExt
                         ( name
                         , div
                             [ class "fr-radio-group"
+                            , classList [ ( "fr-radio-rich", toSrc /= Nothing ) ]
                             , DSFR.Grid.col
                             ]
                             [ input
@@ -132,12 +145,14 @@ view ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExt
                                 , Attr.disabled dis
                                 ]
                                 []
-                            , static <|
-                                label
-                                    [ class "fr-label"
-                                    , Attr.for <| name
-                                    ]
-                                    [ toLabel option ]
+                            , label
+                                [ class "fr-label"
+                                , Attr.for <| name
+                                ]
+                                [ static <| toLabel option
+                                , viewMaybe ((\fn -> fn option) >> List.singleton >> span [ class "fr-hint-text" ]) <| toHint
+                                ]
+                            , viewMaybe ((\fn -> fn option) >> Attr.src >> List.singleton >> decorativeImg >> List.singleton >> div [ class "fr-radio-rich__img" ]) toSrc
                             ]
                         )
                     )
