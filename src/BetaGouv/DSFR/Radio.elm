@@ -51,6 +51,10 @@ type Orientation
     | Vertical
 
 
+type alias Dimensions =
+    ( Int, Int )
+
+
 defaultOptions : OptionalConfig msg data
 defaultOptions =
     { toHint = Nothing
@@ -74,12 +78,12 @@ view =
     viewGeneric Nothing
 
 
-viewRich : (data -> String) -> GroupConfig msg data -> Html msg
+viewRich : (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> Html msg
 viewRich toSrc =
     viewGeneric <| Just toSrc
 
 
-viewGeneric : Maybe (data -> String) -> GroupConfig msg data -> Html msg
+viewGeneric : Maybe (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> Html msg
 viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs } ) =
     let
         inlineAttrs =
@@ -152,7 +156,21 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
                                 [ static <| toLabel option
                                 , viewMaybe ((\fn -> fn option) >> List.singleton >> span [ class "fr-hint-text" ]) <| toHint
                                 ]
-                            , viewMaybe ((\fn -> fn option) >> Attr.src >> List.singleton >> decorativeImg >> List.singleton >> div [ class "fr-radio-rich__img" ]) toSrc
+                            , viewMaybe
+                                (\fn ->
+                                    let
+                                        ( src, dimensions ) =
+                                            fn option
+
+                                        dimensionsAttrs =
+                                            dimensions
+                                                |> Maybe.map (\( width, height ) -> [ Attr.width width, Attr.height height ])
+                                                |> Maybe.withDefault []
+                                    in
+                                    div [ class "fr-radio-rich__img" ]
+                                        [ decorativeImg <| Attr.src src :: dimensionsAttrs ]
+                                )
+                                toSrc
                             ]
                         )
                     )
