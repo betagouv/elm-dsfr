@@ -121,7 +121,7 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
                 [ legend
                 , viewMaybe (List.singleton >> span [ class "fr-hint-text" ]) legendExtra
                 ]
-            , Keyed.node "div" [ class "fr-fieldset__content my-4", DSFR.Grid.col ] <|
+            , Keyed.node "div" [ class "fr-fieldset__content", DSFR.Grid.col ] <|
                 List.map
                     (\option ->
                         let
