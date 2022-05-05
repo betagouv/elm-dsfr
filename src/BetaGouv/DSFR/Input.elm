@@ -1,7 +1,8 @@
-module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, input, new, number, textArea, view, withDisabled, withError, withExtraAttrs, withHint, withName, withOptions, withReadonly, withType)
+module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, input, new, number, textArea, textDisplay, view, withDisabled, withError, withExtraAttrs, withHint, withName, withOptions, withReadonly, withType)
 
 import Accessibility as Html exposing (Attribute, Html)
 import Accessibility.Aria as Aria
+import BetaGouv.DSFR.Typography
 import Html as Root
 import Html.Attributes as Attr
 import Html.Attributes.Extra
@@ -20,6 +21,7 @@ type InputType
     | TextArea
     | DateInput
     | NumberInput
+    | TextDisplay
 
 
 new : MandatoryInputConfig msg -> InputConfig msg
@@ -60,6 +62,11 @@ withType type_ { mandatory, optional } =
 textArea : InputConfig msg -> InputConfig msg
 textArea =
     withType TextArea
+
+
+textDisplay : InputConfig msg -> InputConfig msg
+textDisplay =
+    withType TextDisplay
 
 
 date : InputConfig msg -> InputConfig msg
@@ -174,6 +181,9 @@ view { mandatory, optional } =
                 NumberInput ->
                     Html.inputNumber name <|
                         (defaultInputAttrs ++ [ Attr.type_ "number", Attr.attribute "inputmode" "numeric", Attr.pattern "[0-9]*" ])
+
+                TextDisplay ->
+                    Html.div [ Attr.class "mt-[0.5rem] py-[0.5rem]", DSFR.Typography.textBold ] [ Html.text value ]
     in
     Html.div
         (Attr.class "fr-input-group"
