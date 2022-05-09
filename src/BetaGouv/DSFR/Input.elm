@@ -180,7 +180,14 @@ view { mandatory, optional } =
                         (defaultInputAttrs ++ [ Attr.type_ "number", Attr.attribute "inputmode" "numeric", Attr.pattern "[0-9]*" ])
 
                 TextDisplay ->
-                    Html.div [ Attr.class "mt-[0.5rem] py-[0.5rem]", DSFR.Typography.textBold ] [ Html.text value ]
+                    Html.div [ Attr.class "mt-[0.5rem] py-[0.5rem]", DSFR.Typography.textBold ]
+                        [ Html.text <|
+                            if value == "" then
+                                "-"
+
+                            else
+                                value
+                        ]
     in
     Html.div
         (Attr.class "fr-input-group"
