@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, input, new, number, textArea, textDisplay, view, withDisabled, withError, withExtraAttrs, withHint, withName, withOptions, withReadonly, withType)
+module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, input, new, number, textArea, textDisplay, view, withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType)
 
 import Accessibility as Html exposing (Attribute, Html)
 import Accessibility.Aria as Aria
@@ -79,11 +79,6 @@ number =
     withType NumberInput
 
 
-withName : String -> InputConfig msg -> InputConfig msg
-withName name { mandatory, optional } =
-    { mandatory = mandatory, optional = { optional | name = name } }
-
-
 withExtraAttrs : List (Attribute Never) -> InputConfig msg -> InputConfig msg
 withExtraAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
@@ -99,12 +94,12 @@ type alias MandatoryInputConfig msg =
     { value : String
     , onInput : String -> msg
     , label : Html Never
+    , name : String
     }
 
 
 type alias OptionalInputConfig msg =
-    { name : String
-    , disabled : Bool
+    { disabled : Bool
     , readonly : Bool
     , validMsg : Maybe (List (Html msg))
     , errorMsg : Maybe (List (Html msg))
@@ -117,8 +112,7 @@ type alias OptionalInputConfig msg =
 
 defaultOptions : OptionalInputConfig msg
 defaultOptions =
-    { name = "text-input"
-    , disabled = False
+    { disabled = False
     , readonly = False
     , validMsg = Nothing
     , errorMsg = Nothing
@@ -135,7 +129,10 @@ view { mandatory, optional } =
         { label, onInput, value } =
             mandatory
 
-        { name, errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs } =
+        name =
+            "input-" ++ mandatory.name
+
+        { errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs } =
             optional
 
         defaultInputAttrs =
