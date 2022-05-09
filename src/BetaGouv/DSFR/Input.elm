@@ -1,7 +1,8 @@
-module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, input, new, number, textArea, view, withDisabled, withError, withExtraAttrs, withHint, withName, withOptions, withReadonly, withType)
+module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, input, new, number, textArea, textDisplay, view, withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType)
 
 import Accessibility as Html exposing (Attribute, Html)
 import Accessibility.Aria as Aria
+import BetaGouv.DSFR.Typography
 import Html as Root
 import Html.Attributes as Attr
 import Html.Attributes.Extra
@@ -20,6 +21,7 @@ type InputType
     | TextArea
     | DateInput
     | NumberInput
+    | TextDisplay
 
 
 new : MandatoryInputConfig msg -> InputConfig msg
@@ -62,6 +64,11 @@ textArea =
     withType TextArea
 
 
+textDisplay : InputConfig msg -> InputConfig msg
+textDisplay =
+    withType TextDisplay
+
+
 date : InputConfig msg -> InputConfig msg
 date =
     withType DateInput
@@ -70,11 +77,6 @@ date =
 number : InputConfig msg -> InputConfig msg
 number =
     withType NumberInput
-
-
-withName : String -> InputConfig msg -> InputConfig msg
-withName name { mandatory, optional } =
-    { mandatory = mandatory, optional = { optional | name = name } }
 
 
 withExtraAttrs : List (Attribute Never) -> InputConfig msg -> InputConfig msg
@@ -92,12 +94,12 @@ type alias MandatoryInputConfig msg =
     { value : String
     , onInput : String -> msg
     , label : Html Never
+    , name : String
     }
 
 
 type alias OptionalInputConfig msg =
-    { name : String
-    , disabled : Bool
+    { disabled : Bool
     , readonly : Bool
     , validMsg : Maybe (List (Html msg))
     , errorMsg : Maybe (List (Html msg))
@@ -110,8 +112,7 @@ type alias OptionalInputConfig msg =
 
 defaultOptions : OptionalInputConfig msg
 defaultOptions =
-    { name = "text-input"
-    , disabled = False
+    { disabled = False
     , readonly = False
     , validMsg = Nothing
     , errorMsg = Nothing
@@ -128,7 +129,10 @@ view { mandatory, optional } =
         { label, onInput, value } =
             mandatory
 
-        { name, errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs } =
+        name =
+            "input-" ++ mandatory.name
+
+        { errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs } =
             optional
 
         defaultInputAttrs =
@@ -174,6 +178,9 @@ view { mandatory, optional } =
                 NumberInput ->
                     Html.inputNumber name <|
                         (defaultInputAttrs ++ [ Attr.type_ "number", Attr.attribute "inputmode" "numeric", Attr.pattern "[0-9]*" ])
+
+                TextDisplay ->
+                    Html.div [ Attr.class "mt-[0.5rem] py-[0.5rem]", DSFR.Typography.textBold ] [ Html.text value ]
     in
     Html.div
         (Attr.class "fr-input-group"
