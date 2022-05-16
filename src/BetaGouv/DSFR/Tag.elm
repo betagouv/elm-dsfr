@@ -61,8 +61,8 @@ type Icon
 
 
 unclickable : MandatoryConfig data -> TagConfig msg data
-unclickable label =
-    ( label, Unclickable, defaultOptions )
+unclickable config =
+    ( config, Unclickable, defaultOptions )
 
 
 clickable : String -> MandatoryConfig data -> TagConfig msg data
