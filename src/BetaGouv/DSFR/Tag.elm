@@ -130,6 +130,7 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
                 ((onClick <| msg data)
                     :: type_ "button"
                     :: (pressed <| Just checked)
+                    :: tagAttrs
                     :: sizeAttrs
                     :: List.map Html.Attributes.Extra.static extraAttrs
                 )
