@@ -1,6 +1,7 @@
 module BetaGouv.DSFR.Badge exposing (..)
 
-import Accessibility exposing (Attribute, Html, div, li, p, text, ul)
+import Accessibility exposing (Attribute, Html, div, li, p, ul)
+import BetaGouv.DSFR.Color exposing (CustomColor)
 import Html.Attributes exposing (class)
 import Html.Attributes.Extra exposing (empty)
 import Html.Extra exposing (static)
@@ -28,19 +29,14 @@ type Context
     | New
 
 
-type CustomColor
-    = Standard
-    | Mint
-
-
 customColorToClass : CustomColor -> String
 customColorToClass customColor =
     (++) "fr-badge--" <|
         case customColor of
-            Standard ->
+            DSFR.Color.Standard ->
                 ""
 
-            Mint ->
+            DSFR.Color.Menthe ->
                 "green-menthe"
 
 
@@ -62,16 +58,6 @@ contextToClass context =
 
             New ->
                 "new"
-
-
-standard : CustomColor
-standard =
-    Standard
-
-
-mint : CustomColor
-mint =
-    Mint
 
 
 badgeMD : BadgeConfig -> Html msg
@@ -96,7 +82,7 @@ groupSM =
 
 default : Html Never -> BadgeConfig
 default label =
-    Default { label = label, color = standard } []
+    Default { label = label, color = DSFR.Color.standard } []
 
 
 withColor : CustomColor -> BadgeConfig -> BadgeConfig
