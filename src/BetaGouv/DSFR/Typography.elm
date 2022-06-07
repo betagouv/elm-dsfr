@@ -8,6 +8,7 @@ module BetaGouv.DSFR.Typography exposing
     , downloadLinkMD
     , downloadLinkSM
     , externalLink
+    , externalLinkAttrs
     , fr_h1
     , fr_h2
     , fr_h3
@@ -188,19 +189,31 @@ textSpectralHeavy =
 
 link : String -> List (Attribute Never) -> List (Html msg) -> Html msg
 link href attrs children =
-    a (Attr.href href :: attrs) children
+    let
+        nonEmptyHref =
+            if href == "" then
+                attrs
+
+            else
+                Attr.href href :: attrs
+    in
+    a nonEmptyHref children
 
 
 externalLink : String -> List (Attribute Never) -> List (Html msg) -> Html msg
 externalLink href attrs children =
     a
-        (Attr.href href
-            :: Attr.target "_blank"
-            :: Attr.rel "noopener"
-            :: Attr.rel "noreferrer"
-            :: attrs
-        )
+        (externalLinkAttrs href attrs)
         children
+
+
+externalLinkAttrs : String -> List (Attribute msg) -> List (Attribute msg)
+externalLinkAttrs href attrs =
+    Attr.href href
+        :: Attr.target "_blank"
+        :: Attr.rel "noopener"
+        :: Attr.rel "noreferrer"
+        :: attrs
 
 
 type Icon
