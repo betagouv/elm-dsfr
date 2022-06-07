@@ -1,7 +1,8 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions)
+module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, linkButtonExternal, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions)
 
 import Accessibility exposing (Attribute, Html, button, li, text, ul)
 import BetaGouv.DSFR.Icons exposing (IconName)
+import BetaGouv.DSFR.Typography
 import Html as Root
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (empty)
@@ -254,7 +255,7 @@ view { mandatory, optional } =
                     |> Maybe.withDefault Html.Attributes.Extra.empty
                )
             :: buttonTypeAttrs
-            :: iconAttr label icon
+            ++ iconAttr label icon
             ++ extraAttrs
         )
         [ text label ]
@@ -286,7 +287,7 @@ type ButtonType
     = ClickableBtn
     | SubmitBtn
     | ResetBtn
-    | LinkButton String
+    | LinkButton Bool String
 
 
 type ButtonSize
@@ -391,7 +392,12 @@ reset =
 
 linkButton : String -> ButtonConfig msg -> ButtonConfig msg
 linkButton href =
-    withType <| LinkButton href
+    withType <| LinkButton False href
+
+
+linkButtonExternal : String -> ButtonConfig msg -> ButtonConfig msg
+linkButtonExternal href =
+    withType <| LinkButton True href
 
 
 primary : ButtonConfig msg -> ButtonConfig msg
@@ -445,20 +451,26 @@ defaultOptions =
     }
 
 
-buttonType : ButtonType -> ( List (Attribute msg) -> List (Html msg) -> Html msg, Attribute msg )
+buttonType : ButtonType -> ( List (Attribute msg) -> List (Html msg) -> Html msg, List (Attribute msg) )
 buttonType type_ =
     case type_ of
         SubmitBtn ->
-            ( button, Attr.type_ "submit" )
+            ( button, [ Attr.type_ "submit" ] )
 
         ResetBtn ->
-            ( button, Attr.type_ "reset" )
+            ( button, [ Attr.type_ "reset" ] )
 
         ClickableBtn ->
-            ( button, Attr.type_ "button" )
+            ( button, [ Attr.type_ "button" ] )
 
-        LinkButton href ->
-            ( Root.a, Attr.href href )
+        LinkButton external href ->
+            ( Root.a
+            , if external then
+                DSFR.Typography.externalLinkAttrs href []
+
+              else
+                [ Attr.href href ]
+            )
 
 
 iconAttr : String -> IconPosition -> List (Attribute msg)
