@@ -120,7 +120,7 @@ shownPage toHref current page =
 
 truncatedPage : Html msg
 truncatedPage =
-    toLink [ class "fr-pagination__link--first", Attr.title "Première page" ] True False "" <|
+    toLink [ class "" ] True False "" <|
         DSFR.Icons.iconMD <|
             DSFR.Icons.System.moreLine
 
