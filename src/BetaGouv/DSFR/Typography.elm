@@ -189,7 +189,15 @@ textSpectralHeavy =
 
 link : String -> List (Attribute Never) -> List (Html msg) -> Html msg
 link href attrs children =
-    a (Attr.href href :: attrs) children
+    let
+        nonEmptyHref =
+            if href == "" then
+                attrs
+
+            else
+                Attr.href href :: attrs
+    in
+    a nonEmptyHref children
 
 
 externalLink : String -> List (Attribute Never) -> List (Html msg) -> Html msg
