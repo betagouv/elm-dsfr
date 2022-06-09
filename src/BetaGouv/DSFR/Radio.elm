@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess)
+module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess, withLegendAttrs)
 
 import Accessibility exposing (Attribute, Html, decorativeImg, div, fieldset, label, p, span, text)
 import Accessibility.Aria exposing (labelledBy)
@@ -43,6 +43,7 @@ type alias OptionalConfig msg data =
     , disabled : Bool
     , disabledOption : data -> Bool
     , extraAttrs : List (Attribute Never)
+    , legendAttrs : List (Attribute Never)
     }
 
 
@@ -65,6 +66,7 @@ defaultOptions =
     , disabled = False
     , disabledOption = \_ -> False
     , extraAttrs = []
+    , legendAttrs = []
     }
 
 
@@ -84,7 +86,7 @@ viewRich toSrc =
 
 
 viewGeneric : Maybe (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> Html msg
-viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs } ) =
+viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs, legendAttrs } ) =
     let
         inlineAttrs =
             case orientation of
@@ -117,7 +119,7 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
                 :: inlineAttrs
             )
             [ Accessibility.legend
-                [ class "fr-fieldset__legend fr-text--regular" ]
+                (class "fr-fieldset__legend fr-text--regular" :: legendAttrs)
                 [ legend
                 , viewMaybe (List.singleton >> span [ class "fr-hint-text" ]) legendExtra
                 ]
@@ -225,3 +227,8 @@ withDisabledOption disabledFn ( mandatory, optional ) =
 withExtraAttrs : List (Attribute Never) -> GroupConfig msg data -> GroupConfig msg data
 withExtraAttrs extraAttrs ( mandatory, optional ) =
     ( mandatory, { optional | extraAttrs = extraAttrs } )
+
+
+withLegendAttrs : List (Attribute Never) -> GroupConfig msg data -> GroupConfig msg data
+withLegendAttrs legendAttrs ( mandatory, optional ) =
+    ( mandatory, { optional | legendAttrs = legendAttrs } )
