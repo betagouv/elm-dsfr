@@ -131,12 +131,13 @@ truncatedPage =
 toLink : List (Attribute Never) -> Bool -> Bool -> String -> Html Never -> Html Never
 toLink attrs disabled current href label =
     let
-        actualHref =
+        ( actualHref, workaround ) =
             if disabled then
-                ""
+                {- workaround to prevent anchors being clickable when using an Elm Browser application -}
+                ( "", Attr.target "_self" )
 
             else
-                href
+                ( href, empty )
 
         {- We are not using Accessibility.Aria helpers because they seem to break when compiled in production -}
         ariaCurrent =
@@ -159,6 +160,7 @@ toLink attrs disabled current href label =
             (class "fr-pagination__link fr-pagination__link--lg-label"
                 :: ariaDisabled
                 :: ariaCurrent
+                :: workaround
                 :: Attr.attribute "role" "link"
                 :: attrs
             )
