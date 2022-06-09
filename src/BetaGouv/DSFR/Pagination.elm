@@ -71,6 +71,7 @@ view current total toHref =
     in
     Accessibility.map never <|
         Html.node "nav"
+            {- workaround: we use Html.node "nav" instead of Html.nav because there's a weird bug when using Html.nav: browser navigation breaks when there's two calls of this function on the same page -}
             [ Attr.attribute "role" "navigation"
             , class "fr-pagination"
             , Attr.attribute "aria-label" "Pagination"
