@@ -118,7 +118,7 @@ lastPage total toHref current =
 
 shownPage : (Int -> String) -> Int -> Int -> Html Never
 shownPage toHref current page =
-    toLink [ class "", Attr.title <| "Page " ++ String.fromInt page ] (current == page) (current == page) (toHref page) <| text (String.fromInt page)
+    toLink [ Attr.title <| "Page " ++ String.fromInt page ] (current == page) (current == page) (toHref page) <| text (String.fromInt page)
 
 
 truncatedPage : Html Never
@@ -138,9 +138,18 @@ toLink attrs disabled current href label =
             else
                 href
 
+        {- We are not using Accessibility.Aria helpers because they seem to break when compiled in production -}
         ariaCurrent =
             if current then
-                Accessibility.Aria.currentPage
+                Attr.attribute "aria-current" "page"
+
+            else
+                empty
+
+        {- We are not using Accessibility.Aria helpers because they seem to break when compiled in production -}
+        ariaDisabled =
+            if disabled then
+                Attr.attribute "aria-disabled" "true"
 
             else
                 empty
@@ -148,7 +157,7 @@ toLink attrs disabled current href label =
     li []
         [ DSFR.Typography.link actualHref
             (class "fr-pagination__link fr-pagination__link--lg-label"
-                :: Accessibility.Aria.disabled disabled
+                :: ariaDisabled
                 :: ariaCurrent
                 :: Attr.attribute "role" "link"
                 :: attrs
