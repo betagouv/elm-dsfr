@@ -1,15 +1,14 @@
 module BetaGouv.DSFR.Pagination exposing (..)
 
-import Accessibility exposing (Attribute, Html, li, nav, text, ul)
+import Accessibility exposing (Attribute, Html, li, text, ul)
 import Accessibility.Aria
 import BetaGouv.DSFR.Icons
 import BetaGouv.DSFR.Icons.System
 import BetaGouv.DSFR.Typography
+import Html
 import Html.Attributes as Attr exposing (class)
-import Html.Attributes.Extra exposing (empty, static)
-import Html.Events
+import Html.Attributes.Extra exposing (empty)
 import Html.Extra exposing (nothing)
-import Json.Decode as Decode
 
 
 view : Int -> Int -> (Int -> String) -> Html msg
@@ -71,7 +70,7 @@ view current total toHref =
                     ++ [ nextPage total toHref current ]
     in
     Accessibility.map never <|
-        nav
+        Html.node "nav"
             [ Attr.attribute "role" "navigation"
             , class "fr-pagination"
             , Attr.attribute "aria-label" "Pagination"
