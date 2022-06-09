@@ -6,8 +6,10 @@ import BetaGouv.DSFR.Icons
 import BetaGouv.DSFR.Icons.System
 import BetaGouv.DSFR.Typography
 import Html.Attributes as Attr exposing (class)
-import Html.Attributes.Extra exposing (empty)
+import Html.Attributes.Extra exposing (empty, static)
+import Html.Events
 import Html.Extra exposing (nothing)
+import Json.Decode as Decode
 
 
 view : Int -> Int -> (Int -> String) -> Html msg
@@ -68,14 +70,15 @@ view current total toHref =
                     :: (List.map (shownPage toHref current) <| List.range 1 total)
                     ++ [ nextPage total toHref current ]
     in
-    nav
-        [ Attr.attribute "role" "navigation"
-        , class "fr-pagination"
-        , Attr.attribute "aria-label" "Pagination"
-        ]
-        [ ul [ class "fr-pagination__list" ] <|
-            list
-        ]
+    Accessibility.map never <|
+        nav
+            [ Attr.attribute "role" "navigation"
+            , class "fr-pagination"
+            , Attr.attribute "aria-label" "Pagination"
+            ]
+            [ ul [ class "fr-pagination__list" ] <|
+                list
+            ]
 
 
 type DisplayPage
@@ -83,7 +86,7 @@ type DisplayPage
     | PageNumber Int
 
 
-viewDisplayPage : (Int -> String) -> Int -> DisplayPage -> Html msg
+viewDisplayPage : (Int -> String) -> Int -> DisplayPage -> Html Never
 viewDisplayPage toHref current dp =
     case dp of
         Ellipsis ->
@@ -93,39 +96,39 @@ viewDisplayPage toHref current dp =
             shownPage toHref current page
 
 
-firstPage : (number -> String) -> number -> Html msg
+firstPage : (number -> String) -> number -> Html Never
 firstPage toHref current =
     toLink [ class "fr-pagination__link--first", Attr.title "Première page" ] (current == 1) False (toHref 1) nothing
 
 
-previousPage : (number -> String) -> number -> Html msg
+previousPage : (number -> String) -> number -> Html Never
 previousPage toHref current =
     toLink [ class "fr-pagination__link--prev", Attr.title "Page précédente" ] (current == 1) False (toHref <| current - 1) nothing
 
 
-nextPage : number -> (number -> String) -> number -> Html msg
+nextPage : number -> (number -> String) -> number -> Html Never
 nextPage total toHref current =
     toLink [ class "fr-pagination__link--next", Attr.title "Page suivante" ] (current == total) False (toHref <| current + 1) nothing
 
 
-lastPage : a -> (a -> String) -> a -> Html msg
+lastPage : a -> (a -> String) -> a -> Html Never
 lastPage total toHref current =
     toLink [ class "fr-pagination__link--last", Attr.title "Dernière page" ] (current == total) False (toHref total) nothing
 
 
-shownPage : (Int -> String) -> Int -> Int -> Html msg
+shownPage : (Int -> String) -> Int -> Int -> Html Never
 shownPage toHref current page =
     toLink [ class "", Attr.title <| "Page " ++ String.fromInt page ] (current == page) (current == page) (toHref page) <| text (String.fromInt page)
 
 
-truncatedPage : Html msg
+truncatedPage : Html Never
 truncatedPage =
     toLink [ class "" ] True False "" <|
         DSFR.Icons.iconMD <|
             DSFR.Icons.System.moreLine
 
 
-toLink : List (Attribute Never) -> Bool -> Bool -> String -> Html msg -> Html msg
+toLink : List (Attribute Never) -> Bool -> Bool -> String -> Html Never -> Html Never
 toLink attrs disabled current href label =
     let
         actualHref =
