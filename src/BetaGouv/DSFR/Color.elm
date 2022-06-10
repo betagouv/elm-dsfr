@@ -3,14 +3,38 @@ module BetaGouv.DSFR.Color exposing (..)
 
 type CustomColor
     = Standard
-    | Menthe
+    | GreenMenthe
+    | BlueCumulus
+    | BlueFrance
+    | BrownCaramel
+    | BrownOpera
 
 
 standard : CustomColor
 standard =
-    Standard
+    blueFrance
 
 
 mint : CustomColor
 mint =
-    Menthe
+    GreenMenthe
+
+
+blueCumulus : CustomColor
+blueCumulus =
+    BlueCumulus
+
+
+blueFrance : CustomColor
+blueFrance =
+    BlueFrance
+
+
+brownCaramel : CustomColor
+brownCaramel =
+    BrownCaramel
+
+
+brownOpera : CustomColor
+brownOpera =
+    BrownOpera

@@ -36,8 +36,20 @@ customColorToClass customColor =
             DSFR.Color.Standard ->
                 ""
 
-            DSFR.Color.Menthe ->
+            DSFR.Color.GreenMenthe ->
                 "green-menthe"
+
+            DSFR.Color.BlueCumulus ->
+                "blue-cumulus"
+
+            DSFR.Color.BlueFrance ->
+                "blue-france"
+
+            DSFR.Color.BrownCaramel ->
+                "brown-caramel"
+
+            DSFR.Color.BrownOpera ->
+                "brown-opera"
 
 
 contextToClass : Context -> String
