@@ -1,7 +1,6 @@
 module BetaGouv.DSFR.Table exposing (MandatoryConfig, bordered, captionBottom, captionHidden, captionTop, defaultOptions, fixed, noBorders, noScroll, scroll, table, view, withCaptionAttrs, withContainerAttrs, withTableAttrs, withTbodyAttrs, withTheadAttrs, withToRowAttrs)
 
 import Accessibility exposing (Attribute, Html, div, td, th, thead, tr)
-import BetaGouv.DSFR.Color exposing (CustomColor)
 import Html.Attributes exposing (class, scope)
 import Html.Keyed as Keyed
 
@@ -178,8 +177,8 @@ view ( mandatory, optional ) =
 
         toRow data =
             ( toRowId data
-            , tr (toRowAttrs data) <|
-                List.map (td [ Html.Attributes.id <| toRowId data ] << List.singleton << (\h -> toCell h data)) <|
+            , tr ((Html.Attributes.id <| toRowId data) :: toRowAttrs data) <|
+                List.map (\header -> td [] [ toCell header data ]) <|
                     headers
             )
     in
