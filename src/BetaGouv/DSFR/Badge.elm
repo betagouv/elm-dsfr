@@ -5,6 +5,7 @@ import BetaGouv.DSFR.Color exposing (CustomColor)
 import Html.Attributes exposing (class)
 import Html.Attributes.Extra exposing (empty)
 import Html.Extra exposing (static)
+import Accessibility exposing (span)
 
 
 type BadgeConfig
@@ -35,6 +36,9 @@ customColorToClass customColor =
         case customColor of
             DSFR.Color.Standard ->
                 ""
+
+            DSFR.Color.GreenEmeraude ->
+                "green-emeraude"
 
             DSFR.Color.GreenMenthe ->
                 "green-menthe"
@@ -169,7 +173,7 @@ view size config =
                 System { label } attrs ->
                     ( label, attrs )
     in
-    div [] <|
+    span [] <|
         [ p
             (class "fr-badge"
                 :: sizeAttr

@@ -3,6 +3,7 @@ module BetaGouv.DSFR.Color exposing (..)
 
 type CustomColor
     = Standard
+    | GreenEmeraude
     | GreenMenthe
     | BlueCumulus
     | BlueFrance
@@ -15,8 +16,13 @@ standard =
     blueFrance
 
 
-mint : CustomColor
-mint =
+greenEmeraude : CustomColor
+greenEmeraude =
+    GreenEmeraude
+
+
+greenMenthe : CustomColor
+greenMenthe =
     GreenMenthe
 
 
