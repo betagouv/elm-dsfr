@@ -4,18 +4,18 @@ import Accessibility exposing (Html, div, h1)
 import Accessibility.Aria exposing (controls, labelledBy)
 import Accessibility.Role exposing (dialog)
 import BetaGouv.DSFR.Button
-import BetaGouv.DSFR.Icons
 import BetaGouv.DSFR.Icons.System
 import Html exposing (node)
 import Html.Attributes as Attr exposing (class)
 import Html.Extra exposing (viewMaybe)
+import Html.Extra exposing (nothing)
 
 
 type alias Config msg =
     { id : String
     , label : String
     , openMsg : msg
-    , closeMsg : msg
+    , closeMsg : Maybe msg
     , title : Html msg
     , opened : Bool
     }
@@ -63,18 +63,23 @@ view config content footer =
                                 [ div
                                     [ class "fr-modal__header flex flex-row justify-end"
                                     ]
-                                    [ DSFR.Button.new
-                                        { label = ""
-                                        , onClick = Just config.closeMsg
-                                        }
-                                        |> DSFR.Button.withAttrs
-                                            [ Attr.title "Fermer la fenêtre modale"
-                                            , Attr.attribute "aria-controls" modalId
-                                            ]
-                                        |> DSFR.Button.rightIcon DSFR.Icons.System.closeLine
-                                        |> DSFR.Button.tertiaryNoOutline
-                                        |> DSFR.Button.small
-                                        |> DSFR.Button.view
+                                    [ case config.closeMsg of
+                                        Nothing ->
+                                            nothing
+
+                                        Just closeMsg ->
+                                            DSFR.Button.new
+                                                { label = ""
+                                                , onClick = Just closeMsg
+                                                }
+                                                |> DSFR.Button.withAttrs
+                                                    [ Attr.title "Fermer la fenêtre modale"
+                                                    , Attr.attribute "aria-controls" modalId
+                                                    ]
+                                                |> DSFR.Button.rightIcon DSFR.Icons.System.closeLine
+                                                |> DSFR.Button.tertiaryNoOutline
+                                                |> DSFR.Button.small
+                                                |> DSFR.Button.view
                                     ]
                                 , div
                                     [ class "fr-modal__content"
