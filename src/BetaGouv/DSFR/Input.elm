@@ -5,7 +5,7 @@ import Accessibility.Aria as Aria
 import BetaGouv.DSFR.Typography
 import Html as Root
 import Html.Attributes as Attr
-import Html.Attributes.Extra
+import Html.Attributes.Extra exposing (empty)
 import Html.Events as Events
 import Html.Extra exposing (nothing)
 import Json.Encode as Encode
@@ -18,7 +18,7 @@ input config =
 
 type InputType
     = TextInput
-    | TextArea
+    | TextArea (Maybe Int)
     | DateInput
     | NumberInput
     | TextDisplay
@@ -59,9 +59,9 @@ withType type_ { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | type_ = type_ } }
 
 
-textArea : InputConfig msg -> InputConfig msg
-textArea =
-    withType TextArea
+textArea : Maybe Int -> InputConfig msg -> InputConfig msg
+textArea rows =
+    withType <| TextArea rows
 
 
 textDisplay : InputConfig msg -> InputConfig msg
@@ -169,8 +169,8 @@ view { mandatory, optional } =
                     Html.inputText name <|
                         (defaultInputAttrs ++ [ Attr.type_ "text" ])
 
-                TextArea ->
-                    Html.textarea defaultInputAttrs []
+                TextArea rows ->
+                    Html.textarea ((rows |> Maybe.map Attr.rows |> Maybe.withDefault empty) :: defaultInputAttrs) []
 
                 DateInput ->
                     Root.input (defaultInputAttrs ++ [ Attr.type_ "date" ]) []
