@@ -15,6 +15,7 @@ module BetaGouv.DSFR.Icons exposing
     , iconLG
     , iconMD
     , iconName
+    , iconSM
     , iconXL
     , logo
     , map
@@ -41,7 +42,8 @@ iconName =
 
 
 type IconSize
-    = MD
+    = SM
+    | MD
     | LG
     | XL
 
@@ -51,6 +53,9 @@ genericIcon size name =
     let
         iconSize =
             case size of
+                SM ->
+                    "fr-icon--sm"
+
                 MD ->
                     "fr-icon"
 
@@ -81,6 +86,11 @@ toClassName (IconName name) =
 icon : IconName -> Html msg
 icon =
     iconMD
+
+
+iconSM : IconName -> Html msg
+iconSM =
+    genericIcon SM
 
 
 iconMD : IconName -> Html msg
