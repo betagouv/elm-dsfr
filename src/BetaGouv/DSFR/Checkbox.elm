@@ -106,7 +106,7 @@ type alias GroupConfig msg data =
 
 type alias MandatoryGroupConfig msg data =
     { id : String
-    , label : String
+    , label : Html msg
     , onChecked : data -> Bool -> msg
     , values : List data
     , checked : List data
@@ -192,7 +192,7 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
                 , Typo.textRegular
                 , Attr.id <| id ++ "-legend"
                 ]
-                [ text label
+                [ label
                 , viewMaybe (\h -> span [ class "fr-hint-text" ] [ text h ]) hint
                 ]
             , div [ class "fr-fieldset__content" ] <|
