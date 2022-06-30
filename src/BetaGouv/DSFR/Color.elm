@@ -9,6 +9,7 @@ type CustomColor
     | BlueFrance
     | BrownCaramel
     | BrownOpera
+    | PurpleGlycine
 
 
 standard : CustomColor
@@ -44,3 +45,8 @@ brownCaramel =
 brownOpera : CustomColor
 brownOpera =
     BrownOpera
+
+
+purpleGlycine : CustomColor
+purpleGlycine =
+    PurpleGlycine

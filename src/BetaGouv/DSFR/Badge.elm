@@ -1,11 +1,10 @@
 module BetaGouv.DSFR.Badge exposing (..)
 
-import Accessibility exposing (Attribute, Html, div, li, p, ul)
+import Accessibility exposing (Attribute, Html, li, p, span, ul)
 import BetaGouv.DSFR.Color exposing (CustomColor)
 import Html.Attributes exposing (class)
 import Html.Attributes.Extra exposing (empty)
 import Html.Extra exposing (static)
-import Accessibility exposing (span)
 
 
 type BadgeConfig
@@ -54,6 +53,9 @@ customColorToClass customColor =
 
             DSFR.Color.BrownOpera ->
                 "brown-opera"
+
+            DSFR.Color.PurpleGlycine ->
+                "purple-glycine"
 
 
 contextToClass : Context -> String
