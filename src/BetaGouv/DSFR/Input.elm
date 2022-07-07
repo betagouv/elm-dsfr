@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, email, input, new, number, textArea, textDisplay, view, withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType)
+module BetaGouv.DSFR.Input exposing (InputConfig, InputType(..), MandatoryInputConfig, OptionalInputConfig, date, defaultOptions, email, input, new, number, password, textArea, textDisplay, view, withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType)
 
 import Accessibility as Html exposing (Attribute, Html)
 import Accessibility.Aria as Aria
@@ -19,6 +19,7 @@ input config =
 type InputType
     = TextInput
     | EmailInput
+    | PasswordInput
     | TextArea (Maybe Int)
     | DateInput
     | NumberInput
@@ -68,6 +69,11 @@ textArea rows =
 email : InputConfig msg -> InputConfig msg
 email =
     withType <| EmailInput
+
+
+password : InputConfig msg -> InputConfig msg
+password =
+    withType <| PasswordInput
 
 
 textDisplay : InputConfig msg -> InputConfig msg
@@ -178,6 +184,10 @@ view { mandatory, optional } =
                 EmailInput ->
                     Html.inputText name <|
                         (defaultInputAttrs ++ [ Attr.type_ "email" ])
+
+                PasswordInput ->
+                    Html.inputText name <|
+                        (defaultInputAttrs ++ [ Attr.type_ "password" ])
 
                 TextArea rows ->
                     Html.textarea ((rows |> Maybe.map Attr.rows |> Maybe.withDefault empty) :: defaultInputAttrs) []
