@@ -1,8 +1,10 @@
 module BetaGouv.DSFR.Table exposing (MandatoryConfig, bordered, captionBottom, captionHidden, captionTop, defaultOptions, fixed, noBorders, noScroll, scroll, table, view, withCaptionAttrs, withContainerAttrs, withTableAttrs, withTbodyAttrs, withTheadAttrs, withToRowAttrs)
 
 import Accessibility exposing (Attribute, Html, div, td, th, thead, tr)
+import Html
 import Html.Attributes exposing (class, scope)
 import Html.Keyed as Keyed
+import Html.Attributes.Extra exposing (static)
 
 
 type alias TableConfig msg header data =
@@ -193,7 +195,7 @@ view ( mandatory, optional ) =
         [ Accessibility.table tableAttrs
             [ Accessibility.caption captionAttrs
                 [ caption ]
-            , thead (class "" :: theadAttrs) <|
+            , Html.thead (class "" :: (List.map static theadAttrs )) <|
                 List.singleton <|
                     tr [] <|
                         List.map (th [ scope "col" ] << List.singleton << toHeader) <|
