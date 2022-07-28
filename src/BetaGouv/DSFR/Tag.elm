@@ -111,6 +111,7 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
                 (tagAttrs
                     :: sizeAttrs
                     :: iconAttrs
+                    :: class "!mb-0"
                     :: extraAttrs
                 )
                 [ text <| toString data ]
@@ -162,7 +163,7 @@ medium =
 group : Size -> List (TagConfig msg data) -> Html msg
 group size configs =
     ul [ class "fr-tags-group" ] <|
-        List.map (view size >> List.singleton >> li []) <|
+        List.map (view size >> List.singleton >> li [ class "!pb-0" ]) <|
             configs
 
 
