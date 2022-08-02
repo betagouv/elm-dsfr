@@ -6,6 +6,7 @@ import BetaGouv.DSFR.Button
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (empty)
 import Html.Events as Events
+import Json.Decode as Decode
 
 
 type Size
@@ -43,6 +44,8 @@ genericSearchBar size { submitMsg, inputMsg, buttonLabel, inputLabel, inputPlace
             , Attr.name inputId
             , Attr.placeholder inputPlaceholder
             , Events.onInput inputMsg
+            , Events.on "search" <|
+                Decode.succeed submitMsg
             ]
         , DSFR.Button.new { onClick = Nothing, label = buttonLabel }
             |> DSFR.Button.submit
