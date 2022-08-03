@@ -7,8 +7,7 @@ import BetaGouv.DSFR.Button
 import BetaGouv.DSFR.Icons.System
 import Html exposing (node)
 import Html.Attributes as Attr exposing (class)
-import Html.Extra exposing (viewMaybe)
-import Html.Extra exposing (nothing)
+import Html.Extra exposing (nothing, viewMaybe)
 
 
 type alias Config msg =
@@ -61,7 +60,7 @@ view config content footer =
                                 [ class "fr-modal__body"
                                 ]
                                 [ div
-                                    [ class "fr-modal__header flex flex-row justify-end"
+                                    [ class "fr-modal__header"
                                     ]
                                     [ case config.closeMsg of
                                         Nothing ->
@@ -69,20 +68,21 @@ view config content footer =
 
                                         Just closeMsg ->
                                             DSFR.Button.new
-                                                { label = ""
+                                                { label = "Fermer"
                                                 , onClick = Just closeMsg
                                                 }
                                                 |> DSFR.Button.withAttrs
                                                     [ Attr.title "Fermer la fenêtre modale"
                                                     , Attr.attribute "aria-controls" modalId
                                                     ]
-                                                |> DSFR.Button.rightIcon DSFR.Icons.System.closeLine
-                                                |> DSFR.Button.tertiaryNoOutline
-                                                |> DSFR.Button.small
+                                                |> DSFR.Button.close
                                                 |> DSFR.Button.view
                                     ]
                                 , div
                                     [ class "fr-modal__content"
+                                    , Attr.classList
+                                        [ ( "!mb-0", footer == Nothing )
+                                        ]
                                     ]
                                     [ h1
                                         [ Attr.id modalTitleId
