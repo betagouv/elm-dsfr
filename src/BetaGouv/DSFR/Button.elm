@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, linkButtonExternal, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions)
+module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, linkButtonExternal, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions, close)
 
 import Accessibility exposing (Attribute, Html, button, li, text, ul)
 import BetaGouv.DSFR.Icons exposing (IconName)
@@ -244,6 +244,9 @@ view { mandatory, optional } =
 
                 Tertiary Without ->
                     class "fr-btn--tertiary-no-outline"
+
+                Close ->
+                    class "fr-btn--close"
     in
     node
         (class "fr-btn"
@@ -308,6 +311,7 @@ type Importance
     = Primary
     | Secondary
     | Tertiary Outline
+    | Close
 
 
 type Outline
@@ -418,6 +422,11 @@ tertiary =
 tertiaryNoOutline : ButtonConfig msg -> ButtonConfig msg
 tertiaryNoOutline =
     withImportance <| Tertiary Without
+
+
+close : ButtonConfig msg -> ButtonConfig msg
+close =
+    withImportance Close
 
 
 small : ButtonConfig msg -> ButtonConfig msg
