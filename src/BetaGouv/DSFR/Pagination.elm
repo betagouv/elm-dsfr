@@ -157,7 +157,7 @@ toLink attrs disabled current href label =
     in
     li []
         [ DSFR.Typography.link actualHref
-            (class "fr-pagination__link fr-pagination__link--lg-label"
+            (class "fr-pagination__link fr-pagination__link--lg-label !mb-0"
                 :: ariaDisabled
                 :: ariaCurrent
                 :: workaround
