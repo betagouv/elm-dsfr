@@ -6,7 +6,7 @@ import BetaGouv.DSFR.Button
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (attributeMaybe, empty)
 import Html.Events as Events
-import Html.Extra exposing (nothing, viewMaybe)
+import Html.Extra exposing (nothing)
 import Json.Decode as Decode
 
 
