@@ -1,7 +1,6 @@
 module BetaGouv.DSFR.Pagination exposing (..)
 
 import Accessibility exposing (Attribute, Html, li, text, ul)
-import Accessibility.Aria
 import BetaGouv.DSFR.Icons
 import BetaGouv.DSFR.Icons.System
 import BetaGouv.DSFR.Typography

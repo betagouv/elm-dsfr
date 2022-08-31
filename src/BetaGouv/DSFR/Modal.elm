@@ -4,7 +4,6 @@ import Accessibility exposing (Html, div, h1)
 import Accessibility.Aria exposing (controls, labelledBy)
 import Accessibility.Role exposing (dialog)
 import BetaGouv.DSFR.Button
-import BetaGouv.DSFR.Icons.System
 import Html exposing (node)
 import Html.Attributes as Attr exposing (class)
 import Html.Extra exposing (nothing, viewMaybe)

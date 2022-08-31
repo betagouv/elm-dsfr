@@ -1,6 +1,6 @@
 module BetaGouv.DSFR.Table exposing (MandatoryConfig, bordered, captionBottom, captionHidden, captionTop, defaultOptions, fixed, noBorders, noScroll, scroll, table, view, withCaptionAttrs, withContainerAttrs, withTableAttrs, withTbodyAttrs, withTheadAttrs, withToRowAttrs)
 
-import Accessibility exposing (Attribute, Html, div, td, th, thead, tr)
+import Accessibility exposing (Attribute, Html, div, td, th, tr)
 import Html
 import Html.Attributes exposing (class, scope)
 import Html.Keyed as Keyed
