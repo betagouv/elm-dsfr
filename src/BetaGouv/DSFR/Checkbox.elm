@@ -18,7 +18,7 @@ type alias CheckboxConfig msg data =
 
 type alias MandatoryConfig msg data =
     { value : data
-    , checked : Bool
+    , checked : Maybe Bool
     , valueAsString : data -> String
     , id : String
     , label : String
@@ -51,7 +51,7 @@ viewSingle ( { value, checked, valueAsString, id, label, onChecked }, { hint, di
         , attributeMaybe (\_ -> class "fr-checkbox-group--valid") success
         ]
         [ checkbox (valueAsString value)
-            (Just checked)
+            checked
             [ Attr.name id
             , Attr.id id
             , Attr.disabled disabled
@@ -200,7 +200,7 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
                     (\v ->
                         single
                             { value = v
-                            , checked = List.member v checked
+                            , checked = Just <| List.member v checked
                             , valueAsString = valueAsString
                             , id = id ++ "-option-" ++ toId v
                             , label = toLabel v
