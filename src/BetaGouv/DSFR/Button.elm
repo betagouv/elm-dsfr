@@ -1,6 +1,6 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, defaultOptions, disable, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, linkButtonExternal, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions, close)
+module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, close, defaultOptions, disable, dropdownSelector, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, linkButtonExternal, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions)
 
-import Accessibility exposing (Attribute, Html, button, li, text, ul)
+import Accessibility exposing (Attribute, Html, button, div, li, nav, text, ul)
 import BetaGouv.DSFR.Icons exposing (IconName)
 import BetaGouv.DSFR.Typography
 import Html as Root
@@ -512,3 +512,32 @@ buttonSize size =
 
         Large ->
             class "fr-btn--lg"
+
+
+dropdownSelector : { label : String, hint : Maybe String, id : String } -> List (Html msg) -> Html msg
+dropdownSelector { label, hint, id } actions =
+    nav
+        [ Attr.attribute "role" "navigation"
+        , Attr.class "fr-translate fr-nav"
+        ]
+        [ div
+            [ Attr.class "fr-nav__item"
+            ]
+            [ button
+                [ Attr.class "fr-btn fr-translate__btn"
+                , Attr.attribute "aria-controls" id
+                , Attr.attribute "aria-expanded" "false"
+                , hint |> Maybe.map Attr.title |> Maybe.withDefault empty
+                ]
+                [ text label
+                ]
+            , div
+                [ Attr.class "fr-collapse fr-translate__menu fr-menu"
+                , Attr.id id
+                ]
+                [ ul [ Attr.class "fr-menu__list" ] <|
+                    List.map (List.singleton >> li [ class "w-full" ]) <|
+                        actions
+                ]
+            ]
+        ]
