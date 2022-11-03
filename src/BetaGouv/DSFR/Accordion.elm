@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Accordion exposing (group, single)
+module BetaGouv.DSFR.Accordion exposing (group, raw, single)
 
 import Accessibility exposing (Html, button, div, p, section)
 import Accessibility.Aria exposing (expanded)
@@ -31,7 +31,12 @@ single : Accordion msg -> Html msg
 single { id, open, onClick, header, content } =
     section [ class "fr-accordion", Attr.id id ]
         [ p [ class "fr-accordion__title" ]
-            [ button [ class "fr-accordion__btn", expanded open, Events.onClick onClick ] [ static header ]
+            [ button
+                [ class "fr-accordion__btn"
+                , expanded open
+                , Events.onClick onClick
+                ]
+                [ static header ]
             ]
         , div [ class "fr-collapse" ] [ content ]
         ]
@@ -52,3 +57,19 @@ group { id, accordions, opened, onClick, toId, toHeader, toContent } =
             )
         <|
             accordions
+
+
+raw : { id : String, title : List (Html msg), content : List (Html msg) } -> Html msg
+raw { id, title, content } =
+    section [ class "fr-accordion" ]
+        [ div [ class "fr-accordion__title" ]
+            [ button
+                [ class "fr-accordion__btn"
+                , Accessibility.Aria.controls [ id ]
+                , Accessibility.Aria.expanded False
+                ]
+              <|
+                title
+            ]
+        , div [ class "fr-collapse", Attr.id <| id ] <| content
+        ]
