@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Card exposing (card, horizontal, link, linkFull, vertical, view, withArrow, withDescription, withDetails, withImage)
+module BetaGouv.DSFR.Card exposing (card, horizontal, link, linkFull, vertical, view, withArrow, withDescription, withDetails, withImage, withNoTitle)
 
 import Accessibility exposing (Html, a, decorativeImg, div, h4, p, text)
 import Html.Attributes as Attr exposing (class)
@@ -17,6 +17,7 @@ type alias Options msg =
     , description : Maybe (Html msg)
     , details : Maybe (Html msg)
     , arrow : Bool
+    , noTitle : Bool
     }
 
 
@@ -27,7 +28,8 @@ defaultOptions =
     , imageSrc = Nothing
     , description = Nothing
     , details = Nothing
-    , arrow = False
+    , arrow = True
+    , noTitle = False
     }
 
 
@@ -66,6 +68,11 @@ withDetails details ( t, o, options ) =
     ( t, o, { options | details = details } )
 
 
+withNoTitle : CardConfig msg -> CardConfig msg
+withNoTitle ( t, o, options ) =
+    ( t, o, { options | noTitle = True } )
+
+
 vertical : Orientation
 vertical =
     Vertical
@@ -82,7 +89,7 @@ card title orientation =
 
 
 view : CardConfig msg -> Html msg
-view ( title, orientation, { href, fullLink, imageSrc, description, details, arrow } ) =
+view ( title, orientation, { href, fullLink, imageSrc, description, details, arrow, noTitle } ) =
     let
         orientationClass =
             case orientation of
@@ -101,7 +108,7 @@ view ( title, orientation, { href, fullLink, imageSrc, description, details, arr
 
         arrowClass =
             if not arrow || href == Nothing then
-                class "fr-card--no-arrow"
+                class "fr-card--no-arrow fr-card--no-icon"
 
             else
                 empty
@@ -121,7 +128,13 @@ view ( title, orientation, { href, fullLink, imageSrc, description, details, arr
         [ div
             [ class "fr-card__body" ]
             [ h4
-                [ class "fr-card__title" ]
+                [ class "fr-card__title"
+                , if noTitle then
+                    class "!m-4"
+
+                  else
+                    class ""
+                ]
                 [ cardTitle ]
             , viewMaybe
                 (\desc ->
