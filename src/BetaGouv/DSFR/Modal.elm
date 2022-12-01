@@ -26,7 +26,7 @@ view config content footer =
             "modal-" ++ config.id
 
         modalTitleId =
-            modalId ++ "-title"
+            modalId ++ "--title"
 
         but =
             DSFR.Button.new
@@ -40,7 +40,7 @@ view config content footer =
             node "dialog"
                 [ dialog
                 , labelledBy modalTitleId
-                , Attr.id config.id
+                , Attr.id modalId
                 , Attr.classList
                     [ ( "fr-modal", True )
                     , ( "fr-modal--opened", config.opened )
@@ -57,6 +57,7 @@ view config content footer =
                             ]
                             [ div
                                 [ class "fr-modal__body"
+                                , Attr.id <| modalId ++ "--body"
                                 ]
                                 [ div
                                     [ class "fr-modal__header"
