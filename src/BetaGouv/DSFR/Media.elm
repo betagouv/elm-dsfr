@@ -1,4 +1,4 @@
-module BetaGouv.DSFR.Media exposing (decorativeImg, decorativeImgLG, decorativeImgSM, decorativeSvg, img, imgLG, imgSM, svg, withCaption)
+module BetaGouv.DSFR.Media exposing (decorativeImg, decorativeImgLG, decorativeImgSM, decorativeSvg, img, imgLG, imgSM, svg, withCaption, withResponsive)
 
 import Accessibility exposing (Attribute, Html, div, figcaption, figure, text)
 import Accessibility.Aria exposing (hidden, label)
@@ -10,7 +10,10 @@ import Svg.Attributes exposing (version)
 
 
 type ImageConfig
-    = ImageConfig { caption : Maybe String }
+    = ImageConfig
+        { caption : Maybe String
+        , responsive : Bool
+        }
 
 
 type ImageSize
@@ -37,10 +40,18 @@ imgWrapper size caption =
 
 
 genericImg : ImageSize -> String -> List (Attribute Never) -> ImageConfig -> Html msg
-genericImg size alt attrs (ImageConfig { caption }) =
+genericImg size alt attrs (ImageConfig { caption, responsive }) =
+    let
+        allAttrs =
+            if responsive then
+                class "fr-responsive-img" :: attrs
+
+            else
+                attrs
+    in
     imgWrapper size caption <|
         [ div [ class "fr-content-media__img" ]
-            [ Accessibility.img alt (class "fr-responsive-img" :: attrs) ]
+            [ Accessibility.img alt allAttrs ]
         , genericCaption caption
         ]
 
@@ -111,6 +122,11 @@ decorativeSvg (ImageConfig { caption }) children =
         ]
 
 
-withCaption : String -> ImageConfig
+withCaption : Maybe String -> ImageConfig
 withCaption caption =
-    ImageConfig { caption = Just caption }
+    ImageConfig { caption = caption, responsive = True }
+
+
+withResponsive : Bool -> ImageConfig -> ImageConfig
+withResponsive responsive (ImageConfig config) =
+    ImageConfig { config | responsive = responsive }
