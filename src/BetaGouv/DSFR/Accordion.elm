@@ -2,7 +2,7 @@ module BetaGouv.DSFR.Accordion exposing (group, raw, single)
 
 import Accessibility exposing (Html, button, div, p, section)
 import Accessibility.Aria exposing (expanded)
-import Html.Attributes as Attr exposing (class)
+import Html.Attributes as Attr exposing (class, classList)
 import Html.Events as Events
 import Html.Extra exposing (static)
 
@@ -59,9 +59,12 @@ group { id, accordions, opened, onClick, toId, toHeader, toContent } =
             accordions
 
 
-raw : { id : String, title : List (Html msg), content : List (Html msg) } -> Html msg
-raw { id, title, content } =
-    section [ class "fr-accordion" ]
+raw : { id : String, title : List (Html msg), content : List (Html msg), borderless : Bool } -> Html msg
+raw { id, title, content, borderless } =
+    section
+        [ class "fr-accordion"
+        , classList [ ( "fr-accordion-borderless", borderless ) ]
+        ]
         [ div [ class "fr-accordion__title" ]
             [ button
                 [ class "fr-accordion__btn"
