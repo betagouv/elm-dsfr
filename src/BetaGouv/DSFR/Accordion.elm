@@ -68,6 +68,7 @@ raw { id, title, content, borderless } =
         [ div [ class "fr-accordion__title" ]
             [ button
                 [ class "fr-accordion__btn"
+                , Attr.id <| id ++ "--button"
                 , Accessibility.Aria.controls [ id ]
                 , Accessibility.Aria.expanded False
                 ]
