@@ -7,6 +7,7 @@ import Html as Root
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (empty)
 import Html.Events as Events
+import Html.Extra exposing (nothing)
 
 
 type Size
@@ -231,6 +232,9 @@ view { mandatory, optional } =
         ( node, buttonTypeAttrs ) =
             buttonType type_
 
+        ( iconAttrs, lab ) =
+            iconAttr label icon
+
         importanceClass =
             case importance of
                 Primary ->
@@ -258,10 +262,10 @@ view { mandatory, optional } =
                     |> Maybe.withDefault Html.Attributes.Extra.empty
                )
             :: buttonTypeAttrs
-            ++ iconAttr label icon
+            ++ iconAttrs
             ++ extraAttrs
         )
-        [ text label ]
+        [ lab ]
 
 
 type alias ButtonConfig msg =
@@ -482,20 +486,20 @@ buttonType type_ =
             )
 
 
-iconAttr : String -> IconPosition -> List (Attribute msg)
+iconAttr : String -> IconPosition -> ( List (Attribute msg), Html msg )
 iconAttr label icon =
     case icon of
         NoIcon ->
-            [ empty ]
+            ( [ empty ], text label )
 
         LeftIcon iconName ->
-            [ DSFR.Icons.toClass iconName, class "fr-btn--icon-left" ]
+            ( [ DSFR.Icons.toClass iconName, class "fr-btn--icon-left" ], text label )
 
         RightIcon iconName ->
-            [ DSFR.Icons.toClass iconName, class "fr-btn--icon-right" ]
+            ( [ DSFR.Icons.toClass iconName, class "fr-btn--icon-right" ], text label )
 
         OnlyIcon iconName ->
-            [ DSFR.Icons.toClass iconName, Attr.title label ]
+            ( [ DSFR.Icons.toClass iconName, Attr.title label ], nothing )
 
 
 buttonSize : ButtonSize -> Attribute msg
