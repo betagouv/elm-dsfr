@@ -77,10 +77,18 @@ imgSM =
 
 
 genericDecorativeImg : ImageSize -> List (Attribute Never) -> ImageConfig -> Html msg
-genericDecorativeImg size attrs (ImageConfig { caption }) =
+genericDecorativeImg size attrs (ImageConfig { caption, responsive }) =
+    let
+        allAttrs =
+            if responsive then
+                class "fr-responsive-img" :: attrs
+
+            else
+                attrs
+    in
     imgWrapper size caption <|
         [ div [ class "fr-content-media__img" ]
-            [ Accessibility.decorativeImg (class "fr-responsive-img" :: attrs) ]
+            [ Accessibility.decorativeImg (class "fr-responsive-img" :: allAttrs) ]
         , genericCaption caption
         ]
 
