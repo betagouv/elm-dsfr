@@ -502,16 +502,19 @@ noIcon =
     withIcon NoIcon
 
 
+{-| -}
 leftIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
 leftIcon =
     withIcon << LeftIcon
 
 
+{-| -}
 rightIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
 rightIcon =
     withIcon << RightIcon
 
 
+{-| -}
 onlyIcon : IconName -> ButtonConfig msg -> ButtonConfig msg
 onlyIcon =
     withIcon << OnlyIcon

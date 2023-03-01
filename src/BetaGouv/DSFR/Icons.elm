@@ -1,41 +1,32 @@
 module BetaGouv.DSFR.Icons exposing
-    ( IconName
-    , buildings
-    , business
-    , communication
-    , custom
-    , design
-    , development
-    , device
-    , document
-    , editor
-    , finance
-    , health
-    , icon
-    , iconLG
-    , iconMD
-    , iconName
-    , iconSM
-    , iconXL
-    , logo
-    , map
-    , media
-    , others
-    , system
-    , toClass
-    , toClassName
-    , user
-    , weather
+    ( buildings, business, communication, design, development, device, document, editor, finance, health, icon, iconLG, iconMD, iconName, iconSM, iconXL, logo, map, media, others, system, toClass, user, weather
+    , custom, toClassName, IconName
     )
+
+{-|
+
+
+# Icônes
+
+@docs buildings, business, communication, design, development, device, document, editor, finance, health, icon, iconLG, iconMD, iconName, iconSM, iconXL, logo, map, media, others, system, toClass, user, weather
+
+
+# Utilitaires
+
+@docs custom, toClassName, IconName
+
+-}
 
 import Accessibility exposing (Attribute, Html, span)
 import Html.Attributes exposing (attribute, class)
 
 
+{-| -}
 type IconName
     = IconName String
 
 
+{-| -}
 iconName : String -> IconName
 iconName =
     IconName
@@ -73,47 +64,57 @@ genericIcon size name =
         []
 
 
+{-| -}
 toClass : IconName -> Attribute msg
 toClass =
     class << toClassName
 
 
+{-| -}
 toClassName : IconName -> String
 toClassName (IconName name) =
     name
 
 
+{-| -}
 icon : IconName -> Html msg
 icon =
     iconMD
 
 
+{-| -}
 iconSM : IconName -> Html msg
 iconSM =
     genericIcon SM
 
 
+{-| -}
 iconMD : IconName -> Html msg
 iconMD =
     genericIcon MD
 
 
+{-| -}
 iconLG : IconName -> Html msg
 iconLG =
     genericIcon LG
 
 
+{-| -}
 iconXL : IconName -> Html msg
 iconXL =
     genericIcon XL
 
 
+{-| Crée une icône avec un nom de classe personnalisé
+-}
 custom : String -> IconName
 custom =
     (++) " text-[1.5rem] "
         >> IconName
 
 
+{-| -}
 buildings : { ancientGateFill : IconName, ancientGateLine : IconName, ancientPavilionFill : IconName, ancientPavilionLine : IconName, bankFill : IconName, bankLine : IconName, buildingFill : IconName, buildingLine : IconName, communityFill : IconName, communityLine : IconName, governmentFill : IconName, governmentLine : IconName, home4Fill : IconName, home4Line : IconName, hospitalFill : IconName, hospitalLine : IconName, hotelFill : IconName, hotelLine : IconName, storeFill : IconName, storeLine : IconName }
 buildings =
     { ancientGateFill = IconName "fr-icon-ancient-gate-fill"
@@ -139,6 +140,7 @@ buildings =
     }
 
 
+{-| -}
 business : { archiveFill : IconName, archiveLine : IconName, attachmentFill : IconName, attachmentLine : IconName, awardFill : IconName, awardLine : IconName, barChartBoxFill : IconName, barChartBoxLine : IconName, bookmarkFill : IconName, bookmarkLine : IconName, briefcaseFill : IconName, briefcaseLine : IconName, calendar2Fill : IconName, calendar2Line : IconName, calendarEventFill : IconName, calendarEventLine : IconName, calendarFill : IconName, calendarLine : IconName, cloudFill : IconName, cloudLine : IconName, copyrightFill : IconName, copyrightLine : IconName, customerServiceFill : IconName, customerServiceLine : IconName, flagFill : IconName, flagLine : IconName, globalFill : IconName, globalLine : IconName, lineChartFill : IconName, lineChartLine : IconName, linksFill : IconName, linksLine : IconName, mailFill : IconName, mailLine : IconName, mailOpenFill : IconName, mailOpenLine : IconName, medalFill : IconName, medalLine : IconName, pieChart2Fill : IconName, pieChart2Line : IconName, pieChartBoxFill : IconName, pieChartBoxLine : IconName, printerFill : IconName, printerLine : IconName, profilFill : IconName, profilLine : IconName, projector2Fill : IconName, projector2Line : IconName, sendPlaneFill : IconName, sendPlaneLine : IconName, slideshowFill : IconName, slideshowLine : IconName, windowFill : IconName, windowLine : IconName }
 business =
     { archiveFill = IconName "fr-icon-archive-fill"
@@ -198,6 +200,7 @@ business =
     }
 
 
+{-| -}
 communication : { chat2Fill : IconName, chat2Line : IconName, chat3Fill : IconName, chat3Line : IconName, chatCheckFill : IconName, chatCheckLine : IconName, chatDeleteFill : IconName, chatDeleteLine : IconName, chatPollFill : IconName, chatPollLine : IconName, discussFill : IconName, discussLine : IconName, feedbackFill : IconName, feedbackLine : IconName, message2Fill : IconName, message2Line : IconName, questionAnswerFill : IconName, questionAnswerLine : IconName, questionnaireFill : IconName, questionnaireLine : IconName, videoChatFill : IconName, videoChatLine : IconName }
 communication =
     { chat2Fill = IconName "fr-icon-chat-2-fill"
@@ -225,6 +228,7 @@ communication =
     }
 
 
+{-| -}
 design : { ballPenFill : IconName, ballPenLine : IconName, brush3Fill : IconName, brush3Line : IconName, brushFill : IconName, brushLine : IconName, contrastFill : IconName, contrastLine : IconName, cropFill : IconName, cropLine : IconName, dragMove2Fill : IconName, dragMove2Line : IconName, dropFill : IconName, dropLine : IconName, editBoxFill : IconName, editBoxLine : IconName, editFill : IconName, editLine : IconName, inkBottleFill : IconName, inkBottleLine : IconName, layoutGridFill : IconName, layoutGridLine : IconName, markPenFill : IconName, markPenLine : IconName, paintBrushFill : IconName, paintBrushLine : IconName, paintFill : IconName, paintLine : IconName, paletteFill : IconName, paletteLine : IconName, pantoneFill : IconName, pantoneLine : IconName, penNibFill : IconName, penNibLine : IconName, pencilFill : IconName, pencilLine : IconName, pencilRulerFill : IconName, pencilRulerLine : IconName, sipFill : IconName, sipLine : IconName, tableFill : IconName, tableLine : IconName }
 design =
     { ballPenFill = IconName "fr-icon-ball-pen-fill"
@@ -272,6 +276,7 @@ design =
     }
 
 
+{-| -}
 development : { bugFill : IconName, bugLine : IconName, codeBoxFill : IconName, codeBoxLine : IconName, codeSSlashLine : IconName, cursorFill : IconName, cursorLine : IconName, gitBranchFill : IconName, gitBranchLine : IconName, gitCommitFill : IconName, gitCommitLine : IconName, gitMergeFill : IconName, gitMergeLine : IconName, gitPullRequestFill : IconName, gitPullRequestLine : IconName, gitRepositoryCommitsFill : IconName, gitRepositoryCommitsLine : IconName, gitRepositoryFill : IconName, gitRepositoryLine : IconName, gitRepositoryPrivateFill : IconName, gitRepositoryPrivateLine : IconName, terminalBoxFill : IconName, terminalBoxLine : IconName, terminalLine : IconName, terminalWindowFill : IconName, terminalWindowLine : IconName }
 development =
     { bugFill = IconName "fr-icon-bug-fill"
@@ -303,6 +308,7 @@ development =
     }
 
 
+{-| -}
 device : { bluetoothFill : IconName, bluetoothLine : IconName, computerFill : IconName, computerLine : IconName, dashboard3Fill : IconName, dashboard3Line : IconName, databaseFill : IconName, databaseLine : IconName, deviceFill : IconName, deviceLine : IconName, hardDrive2Fill : IconName, hardDrive2Line : IconName, macFill : IconName, macLine : IconName, phoneFill : IconName, phoneLine : IconName, qrCodeFill : IconName, qrCodeLine : IconName, rssFill : IconName, rssLine : IconName, save3Fill : IconName, save3Line : IconName, saveFill : IconName, saveLine : IconName, serverFill : IconName, serverLine : IconName, smartphoneFill : IconName, smartphoneLine : IconName, tabletFill : IconName, tabletLine : IconName, tvFill : IconName, tvLine : IconName, wifiFill : IconName, wifiLine : IconName }
 device =
     { bluetoothFill = IconName "fr-icon-bluetooth-fill"
@@ -342,6 +348,7 @@ device =
     }
 
 
+{-| -}
 document : { articleFill : IconName, articleLine : IconName, book2Fill : IconName, book2Line : IconName, bookletFill : IconName, bookletLine : IconName, clipboardFill : IconName, clipboardLine : IconName, draftFill : IconName, draftLine : IconName, fileAddFill : IconName, fileAddLine : IconName, fileDownloadFill : IconName, fileDownloadLine : IconName, fileFill : IconName, fileLine : IconName, filePdfFill : IconName, filePdfLine : IconName, fileTextFill : IconName, fileTextLine : IconName, folder2Fill : IconName, folder2Line : IconName, newspaperFill : IconName, newspaperLine : IconName, surveyFill : IconName, surveyLine : IconName, todoFill : IconName, todoLine : IconName }
 document =
     { articleFill = IconName "fr-icon-article-fill"
@@ -375,6 +382,7 @@ document =
     }
 
 
+{-| -}
 editor : { codeView : IconName, fontSize : IconName, bold : IconName, highlight : IconName, quoteFill : IconName, quoteLine : IconName, h1 : IconName, h2 : IconName, h3 : IconName, h4 : IconName, h5 : IconName, h6 : IconName, hashtag : IconName, italic : IconName, linkUnlink : IconName, link : IconName, listOrdered : IconName, listUnordered : IconName, questionMark : IconName, separator : IconName, space : IconName, subscript : IconName, superscript : IconName, table2 : IconName, translate2 : IconName }
 editor =
     { codeView = IconName "fr-icon-code-view"
@@ -405,6 +413,7 @@ editor =
     }
 
 
+{-| -}
 finance : { bankCardFill : IconName, bankCardLine : IconName, coinFill : IconName, giftFill : IconName, giftLine : IconName, moneyEuroBoxFill : IconName, moneyEuroBoxLine : IconName, moneyEuroCircleFill : IconName, moneyEuroCircleLine : IconName, securePaymentFill : IconName, securePaymentLine : IconName, shoppingBagFill : IconName, shoppingBagLine : IconName, shoppingCart2Fill : IconName, shoppingCart2Line : IconName, trophyFill : IconName, trophyLine : IconName }
 finance =
     { bankCardFill = IconName "fr-icon-bank-card-fill"
@@ -427,6 +436,7 @@ finance =
     }
 
 
+{-| -}
 health : { capsuleFill : IconName, capsuleLine : IconName, dislikeFill : IconName, dislikeLine : IconName, dossierFill : IconName, dossierLine : IconName, firstAidKitFill : IconName, firstAidKitLine : IconName, handSanitizerFill : IconName, handSanitizerLine : IconName, healthBookFill : IconName, healthBookLine : IconName, heartFill : IconName, heartLine : IconName, heartPulseFill : IconName, heartPulseLine : IconName, lungsFill : IconName, lungsLine : IconName, medicineBottleFill : IconName, medicineBottleLine : IconName, mentalHealthFill : IconName, mentalHealthLine : IconName, microscopeFill : IconName, microscopeLine : IconName, psychotherapyFill : IconName, psychotherapyLine : IconName, pulseLine : IconName, stethoscopeFill : IconName, stethoscopeLine : IconName, surgicalMaskFill : IconName, surgicalMaskLine : IconName, syringeFill : IconName, syringeLine : IconName, testTubeFill : IconName, testTubeLine : IconName, thermometerFill : IconName, thermometerLine : IconName, virusFill : IconName, virusLine : IconName }
 health =
     { capsuleFill = IconName "fr-icon-capsule-fill"
@@ -471,6 +481,7 @@ health =
     }
 
 
+{-| -}
 logo : { chromeFill : IconName, chromeLine : IconName, edgeFill : IconName, edgeLine : IconName, facebookCircleFill : IconName, facebookCircleLine : IconName, firefoxFill : IconName, firefoxLine : IconName, dailymotionFill : IconName, dailymotionLine : IconName, tiktokFill : IconName, tiktokLine : IconName, githubFill : IconName, githubLine : IconName, googleFill : IconName, googleLine : IconName, ieFill : IconName, ieLine : IconName, instagramFill : IconName, instagramLine : IconName, linkedinBoxFill : IconName, linkedinBoxLine : IconName, mastodonFill : IconName, mastodonLine : IconName, npmjsFill : IconName, npmjsLine : IconName, remixiconFill : IconName, remixiconLine : IconName, safariFill : IconName, safariLine : IconName, slackFill : IconName, slackLine : IconName, snapchatFill : IconName, snapchatLine : IconName, telegramFill : IconName, telegramLine : IconName, twitchFill : IconName, twitchLine : IconName, twitterFill : IconName, twitterLine : IconName, vimeoFill : IconName, vimeoLine : IconName, vuejsFill : IconName, vuejsLine : IconName, youtubeFill : IconName, youtubeLine : IconName }
 logo =
     { chromeFill = IconName "fr-icon-chrome-fill"
@@ -522,6 +533,7 @@ logo =
     }
 
 
+{-| -}
 map : { anchorFill : IconName, anchorLine : IconName, bikeFill : IconName, bikeLine : IconName, busFill : IconName, busLine : IconName, carFill : IconName, carLine : IconName, caravanFill : IconName, caravanLine : IconName, chargingPile2Fill : IconName, chargingPile2Line : IconName, compass3Fill : IconName, compass3Line : IconName, cupFill : IconName, cupLine : IconName, earthFill : IconName, earthLine : IconName, franceFill : IconName, franceLine : IconName, gasStationFill : IconName, gasStationLine : IconName, gobletFill : IconName, gobletLine : IconName, mapPin2Fill : IconName, mapPin2Line : IconName, mapPinUserFill : IconName, mapPinUserLine : IconName, motorbikeFill : IconName, motorbikeLine : IconName, passportFill : IconName, passportLine : IconName, restaurantFill : IconName, restaurantLine : IconName, roadMapFill : IconName, roadMapLine : IconName, sailboatFill : IconName, sailboatLine : IconName, ship2Fill : IconName, ship2Line : IconName, signalTowerFill : IconName, signalTowerLine : IconName, suitcase2Fill : IconName, suitcase2Line : IconName, taxiFill : IconName, taxiLine : IconName, trainFill : IconName, trainLine : IconName }
 map =
     { anchorFill = IconName "fr-icon-anchor-fill"
@@ -575,6 +587,7 @@ map =
     }
 
 
+{-| -}
 media : { cameraFill : IconName, cameraLine : IconName, clapperboardFill : IconName, clapperboardLine : IconName, equalizerFill : IconName, equalizerLine : IconName, filmFill : IconName, filmLine : IconName, galleryFill : IconName, galleryLine : IconName, headphoneFill : IconName, headphoneLine : IconName, imageAddFill : IconName, imageAddLine : IconName, imageEditFill : IconName, imageEditLine : IconName, imageFill : IconName, imageLine : IconName, liveFill : IconName, liveLine : IconName, micFill : IconName, micLine : IconName, music2Fill : IconName, music2Line : IconName, notification3Fill : IconName, notification3Line : IconName, pauseCircleFill : IconName, pauseCircleLine : IconName, playCircleFill : IconName, playCircleLine : IconName, stopCircleFill : IconName, stopCircleLine : IconName, transcription : IconName, volumeDownFill : IconName, volumeDownLine : IconName, volumeMuteFill : IconName, volumeMuteLine : IconName, volumeUpFill : IconName, volumeUpLine : IconName }
 media =
     { cameraFill = IconName "fr-icon-camera-fill"
@@ -619,6 +632,7 @@ media =
     }
 
 
+{-| -}
 others : { leafFill : IconName, leafLine : IconName, lightbulbFill : IconName, lightbulbLine : IconName, plantFill : IconName, plantLine : IconName, recycleFill : IconName, recycleLine : IconName, scales3Fill : IconName, scales3Line : IconName, seedlingFill : IconName, seedlingLine : IconName, umbrellaFill : IconName, umbrellaLine : IconName }
 others =
     { leafFill = IconName "fr-icon-leaf-fill"
@@ -638,6 +652,7 @@ others =
     }
 
 
+{-| -}
 system : { addCircleFill : IconName, addCircleLine : IconName, addLine : IconName, alarmWarningFill : IconName, alarmWarningLine : IconName, alertFill : IconName, alertLine : IconName, arrowDownFill : IconName, arrowDownLine : IconName, arrowDownSFill : IconName, arrowDownSLine : IconName, arrowGoBackFill : IconName, arrowGoBackLine : IconName, arrowGoForwardFill : IconName, arrowGoForwardLine : IconName, arrowLeftFill : IconName, arrowLeftLine : IconName, arrowLeftSFill : IconName, arrowLeftSLine : IconName, arrowRightFill : IconName, arrowRightLine : IconName, arrowRightSFill : IconName, arrowRightSLine : IconName, arrowRightUpLine : IconName, arrowUpFill : IconName, arrowUpLine : IconName, arrowUpSFill : IconName, arrowUpSLine : IconName, checkLine : IconName, checkboxCircleFill : IconName, checkboxCircleLine : IconName, checkboxFill : IconName, checkboxLine : IconName, closeCircleFill : IconName, closeCircleLine : IconName, closeLine : IconName, deleteFill : IconName, deleteLine : IconName, downloadFill : IconName, downloadLine : IconName, errorWarningFill : IconName, errorWarningLine : IconName, externalLinkFill : IconName, externalLinkLine : IconName, eyeFill : IconName, eyeLine : IconName, eyeOffFill : IconName, eyeOffLine : IconName, filterFill : IconName, filterLine : IconName, arrowLeftSFirstLine : IconName, arrowLeftSLineDouble : IconName, arrowRightSLastLine : IconName, arrowRightSLineDouble : IconName, errorFill : IconName, errorLine : IconName, infoFill : IconName, infoLine : IconName, successFill : IconName, successLine : IconName, themeFill : IconName, warningFill : IconName, warningLine : IconName, informationFill : IconName, informationLine : IconName, lockFill : IconName, lockLine : IconName, lockUnlockFill : IconName, lockUnlockLine : IconName, logoutBoxRFill : IconName, logoutBoxRLine : IconName, menu2Fill : IconName, menuFill : IconName, moreFill : IconName, moreLine : IconName, notificationBadgeFill : IconName, notificationBadgeLine : IconName, questionFill : IconName, questionLine : IconName, refreshFill : IconName, refreshLine : IconName, searchFill : IconName, searchLine : IconName, settings5Fill : IconName, settings5Line : IconName, shieldFill : IconName, shieldLine : IconName, starFill : IconName, starLine : IconName, starSFill : IconName, starSLine : IconName, subtractLine : IconName, thumbDownFill : IconName, thumbDownLine : IconName, thumbUpFill : IconName, thumbUpLine : IconName, timeFill : IconName, timeLine : IconName, timerFill : IconName, timerLine : IconName, upload2Fill : IconName, upload2Line : IconName, uploadFill : IconName, uploadLine : IconName, zoomInFill : IconName, zoomInLine : IconName, zoomOutFill : IconName, zoomOutLine : IconName }
 system =
     { addCircleFill = IconName "fr-icon-add-circle-fill"
@@ -751,6 +766,7 @@ system =
     }
 
 
+{-| -}
 user : { accountCircleFill : IconName, accountCircleLine : IconName, accountFill : IconName, accountLine : IconName, accountPinCircleFill : IconName, accountPinCircleLine : IconName, adminFill : IconName, adminLine : IconName, groupFill : IconName, groupLine : IconName, parentFill : IconName, parentLine : IconName, teamFill : IconName, teamLine : IconName, userAddFill : IconName, userAddLine : IconName, userFill : IconName, userHeartFill : IconName, userHeartLine : IconName, userLine : IconName, userSearchFill : IconName, userSearchLine : IconName, userSettingFill : IconName, userSettingLine : IconName, userStarFill : IconName, userStarLine : IconName }
 user =
     { accountCircleFill = IconName "fr-icon-account-circle-fill"
@@ -782,6 +798,7 @@ user =
     }
 
 
+{-| -}
 weather : { cloudy2Fill : IconName, cloudy2Line : IconName, flashlightFill : IconName, flashlightLine : IconName, moonFill : IconName, moonLine : IconName, sunFill : IconName, sunLine : IconName }
 weather =
     { cloudy2Fill = IconName "fr-icon-cloudy-2-fill"
