@@ -1,4 +1,99 @@
-module BetaGouv.DSFR.Button exposing (ButtonConfig, MandatoryButtonConfig, OptionalButtonConfig, addAfter, addBefore, alignedCenter, alignedRight, alignedRightInverted, breakpointLG, breakpointMD, breakpointSM, buttonSize, buttonType, close, defaultOptions, disable, dropdownSelector, group, groupLarge, groupSmall, iconAttr, iconsLeft, iconsRight, inline, inlineFrom, large, leftIcon, linkButton, linkButtonExternal, medium, new, noIcon, onlyIcon, primary, regular, reset, rightIcon, secondary, single, small, submit, tertiary, tertiaryNoOutline, view, viewGroup, withAttrs, withDisabled, withOptions)
+module BetaGouv.DSFR.Button exposing
+    ( new, view
+    , group, viewGroup
+    , small, medium, large
+    , disable, linkButton, linkButtonExternal, regular, reset, submit
+    , leftIcon, rightIcon, noIcon, onlyIcon
+    , close, primary, secondary, tertiary, tertiaryNoOutline
+    , groupSmall, groupLarge
+    , iconsLeft, iconsRight
+    , breakpointSM, breakpointMD, breakpointLG
+    , alignedCenter, alignedRight, alignedRightInverted
+    , inline, inlineFrom
+    , addAfter, addBefore
+    , withAttrs, withDisabled, withOptions
+    , dropdownSelector
+    )
+
+{-|
+
+
+# Bouton
+
+@docs new, view
+
+
+# Groupe de boutons
+
+@docs group, viewGroup
+
+
+# Configuration des boutons
+
+
+## Tailles de bouton
+
+@docs small, medium, large
+
+
+## Types de bouton
+
+@docs disable, linkButton, linkButtonExternal, regular, reset, submit
+
+
+## Placement de l'icône
+
+@docs leftIcon, rightIcon, noIcon, onlyIcon
+
+
+## Importance
+
+@docs close, primary, secondary, tertiary, tertiaryNoOutline
+
+
+# Configuration des groupes de boutons
+
+
+## Taille des boutons du groupe
+
+@docs groupSmall, groupLarge
+
+
+## Placement des icônes des boutons du groupe
+
+@docs iconsLeft, iconsRight
+
+
+## Points de rupture
+
+@docs breakpointSM, breakpointMD, breakpointLG
+
+
+## Placement des boutons dans le groupe
+
+@docs alignedCenter, alignedRight, alignedRightInverted
+
+
+## Disposition des boutons dans le groupe
+
+@docs inline, inlineFrom
+
+
+## Ajout de boutons au groupe
+
+@docs addAfter, addBefore
+
+
+## Personnalisation
+
+@docs withAttrs, withDisabled, withOptions
+
+
+## Liste déroulante
+
+@docs dropdownSelector
+
+-}
 
 import Accessibility exposing (Attribute, Html, button, div, li, nav, text, ul)
 import BetaGouv.DSFR.Icons exposing (IconName)
@@ -16,11 +111,15 @@ type Size
     | LG
 
 
+{-| Groupe de petits boutons
+-}
 groupSmall : GroupConfig msg -> GroupConfig msg
 groupSmall config =
     { config | size = SM }
 
 
+{-| Groupe de grands boutons
+-}
 groupLarge : GroupConfig msg -> GroupConfig msg
 groupLarge config =
     { config | size = LG }
@@ -38,26 +137,33 @@ type Breakpoint
     | BreakpointLG
 
 
+{-| -}
 breakpointSM : Breakpoint
 breakpointSM =
     BreakpointSM
 
 
+{-| -}
 breakpointMD : Breakpoint
 breakpointMD =
     BreakpointMD
 
 
+{-| -}
 breakpointLG : Breakpoint
 breakpointLG =
     BreakpointLG
 
 
+{-| Applique le mode horizontal
+-}
 inline : GroupConfig msg -> GroupConfig msg
 inline config =
     { config | orientation = Inline }
 
 
+{-| Applique le mode horizontal à partir d'un certain point de rupture
+-}
 inlineFrom : Breakpoint -> GroupConfig msg -> GroupConfig msg
 inlineFrom breakpoint config =
     { config | orientation = InlineFrom breakpoint }
@@ -70,16 +176,19 @@ type Placement
     | RightInverted
 
 
+{-| -}
 alignedCenter : GroupConfig msg -> GroupConfig msg
 alignedCenter config =
     { config | placement = Center }
 
 
+{-| -}
 alignedRight : GroupConfig msg -> GroupConfig msg
 alignedRight config =
     { config | placement = RightNormal }
 
 
+{-| -}
 alignedRightInverted : GroupConfig msg -> GroupConfig msg
 alignedRightInverted config =
     { config | placement = RightInverted }
@@ -91,11 +200,13 @@ type GroupIcon
     | NoI
 
 
+{-| -}
 iconsLeft : GroupConfig msg -> GroupConfig msg
 iconsLeft config =
     { config | icons = LeftI }
 
 
+{-| -}
 iconsRight : GroupConfig msg -> GroupConfig msg
 iconsRight config =
     { config | icons = RightI }
@@ -111,6 +222,17 @@ type alias GroupConfig msg =
     }
 
 
+{-| Crée un groupe de boutons
+
+Par défaut les boutons sont de tailles moyennes et placés à la verticale.
+
+    [ Button.new ...]
+        |> Button.group
+        |> Button.inline
+        |> Button.alignedRightInverted
+        |> Button.viewGroup
+
+-}
 group : List (ButtonConfig msg) -> GroupConfig msg
 group buttons =
     { buttons = buttons
@@ -122,16 +244,22 @@ group buttons =
     }
 
 
+{-| Ajoute un bouton au début du groupe
+-}
 addBefore : ButtonConfig msg -> GroupConfig msg -> GroupConfig msg
 addBefore button config =
     { config | buttons = button :: config.buttons }
 
 
+{-| Ajoute un bouton à la fin du groupe
+-}
 addAfter : ButtonConfig msg -> GroupConfig msg -> GroupConfig msg
 addAfter button config =
     { config | buttons = config.buttons ++ [ button ] }
 
 
+{-| Affiche un groupe de boutons
+-}
 viewGroup : GroupConfig msg -> Html msg
 viewGroup { buttons, size, orientation, placement, icons, equisized } =
     let
@@ -215,11 +343,26 @@ single mandatory =
     { mandatory = mandatory, optional = defaultOptions }
 
 
+{-| Crée un bouton
+
+    Button.new { onClick = Just Action, label = "action" }
+
+-}
 new : MandatoryButtonConfig msg -> ButtonConfig msg
 new =
     single
 
 
+{-| Affiche un bouton
+
+    Button.new { onClick = Nothing, label = "Ajouter" }
+        |> Button.linkButton "/add"
+        |> Button.tertiaryNoOutline
+        |> Button.withAttrs [ class "w-full" ]
+        |> Button.leftIcon Icons.System.addLine
+        |> Button.view
+
+-}
 view : ButtonConfig msg -> Html msg
 view { mandatory, optional } =
     let
@@ -323,31 +466,37 @@ type Outline
     | Without
 
 
+{-| -}
 withOptions : OptionalButtonConfig msg -> ButtonConfig msg -> ButtonConfig msg
 withOptions optional config =
     { config | optional = optional }
 
 
+{-| -}
 withType : ButtonType -> ButtonConfig msg -> ButtonConfig msg
 withType type_ { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | type_ = type_ } }
 
 
+{-| -}
 withSize : ButtonSize -> ButtonConfig msg -> ButtonConfig msg
 withSize size { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | size = size } }
 
 
+{-| -}
 withImportance : Importance -> ButtonConfig msg -> ButtonConfig msg
 withImportance importance { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | importance = importance } }
 
 
+{-| -}
 withIcon : IconPosition -> ButtonConfig msg -> ButtonConfig msg
 withIcon icon { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | icon = icon } }
 
 
+{-| -}
 noIcon : ButtonConfig msg -> ButtonConfig msg
 noIcon =
     withIcon NoIcon
@@ -368,86 +517,103 @@ onlyIcon =
     withIcon << OnlyIcon
 
 
+{-| -}
 withDisabled : Bool -> ButtonConfig msg -> ButtonConfig msg
 withDisabled disabled { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | disabled = disabled } }
 
 
+{-| -}
 withAttrs : List (Attribute msg) -> ButtonConfig msg -> ButtonConfig msg
 withAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
 
 
+{-| -}
 regular : ButtonConfig msg -> ButtonConfig msg
 regular =
     clickable
 
 
+{-| -}
 clickable : ButtonConfig msg -> ButtonConfig msg
 clickable =
     withType ClickableBtn
 
 
+{-| -}
 submit : ButtonConfig msg -> ButtonConfig msg
 submit =
     withType SubmitBtn
 
 
+{-| -}
 reset : ButtonConfig msg -> ButtonConfig msg
 reset =
     withType ResetBtn
 
 
+{-| -}
 linkButton : String -> ButtonConfig msg -> ButtonConfig msg
 linkButton href =
     withType <| LinkButton False href
 
 
+{-| -}
 linkButtonExternal : String -> ButtonConfig msg -> ButtonConfig msg
 linkButtonExternal href =
     withType <| LinkButton True href
 
 
+{-| -}
 primary : ButtonConfig msg -> ButtonConfig msg
 primary =
     withImportance Primary
 
 
+{-| -}
 secondary : ButtonConfig msg -> ButtonConfig msg
 secondary =
     withImportance Secondary
 
 
+{-| -}
 tertiary : ButtonConfig msg -> ButtonConfig msg
 tertiary =
     withImportance <| Tertiary With
 
 
+{-| -}
 tertiaryNoOutline : ButtonConfig msg -> ButtonConfig msg
 tertiaryNoOutline =
     withImportance <| Tertiary Without
 
 
+{-| -}
 close : ButtonConfig msg -> ButtonConfig msg
 close =
     withImportance Close
 
 
+{-| -}
 small : ButtonConfig msg -> ButtonConfig msg
 small =
     withSize Small
 
 
+{-| -}
 medium : ButtonConfig msg -> ButtonConfig msg
 medium =
     withSize Medium
 
 
+{-| -}
 large : ButtonConfig msg -> ButtonConfig msg
 large =
     withSize Large
 
 
+{-| -}
 disable : ButtonConfig msg -> ButtonConfig msg
 disable =
     withDisabled True
@@ -479,7 +645,7 @@ buttonType type_ =
         LinkButton external href ->
             ( Root.a
             , if external then
-                DSFR.Typography.externalLinkAttrs href []
+                BetaGouv.DSFR.Typography.externalLinkAttrs href []
 
               else
                 [ Attr.href href ]
@@ -493,13 +659,13 @@ iconAttr label icon =
             ( [ empty ], text label )
 
         LeftIcon iconName ->
-            ( [ DSFR.Icons.toClass iconName, class "fr-btn--icon-left" ], text label )
+            ( [ BetaGouv.DSFR.Icons.toClass iconName, class "fr-btn--icon-left" ], text label )
 
         RightIcon iconName ->
-            ( [ DSFR.Icons.toClass iconName, class "fr-btn--icon-right" ], text label )
+            ( [ BetaGouv.DSFR.Icons.toClass iconName, class "fr-btn--icon-right" ], text label )
 
         OnlyIcon iconName ->
-            ( [ DSFR.Icons.toClass iconName, Attr.title label ], nothing )
+            ( [ BetaGouv.DSFR.Icons.toClass iconName, Attr.title label ], nothing )
 
 
 buttonSize : ButtonSize -> Attribute msg
@@ -518,6 +684,12 @@ buttonSize size =
             class "fr-btn--lg"
 
 
+{-| Liste déroulante de boutons
+
+    Button.dropdownSelector { label = "Actions", hint = Just "indication", id = "id" }
+        <| [ Button.new ... ]
+
+-}
 dropdownSelector : { label : String, hint : Maybe String, id : String } -> List (Html msg) -> Html msg
 dropdownSelector { label, hint, id } actions =
     nav

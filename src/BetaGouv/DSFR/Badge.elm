@@ -1,4 +1,39 @@
-module BetaGouv.DSFR.Badge exposing (..)
+module BetaGouv.DSFR.Badge exposing
+    ( badgeMD, badgeSM
+    , default, system
+    , Context
+    , groupMD, groupSM
+    , withColor, withAttrs
+    )
+
+{-| Badge
+
+
+# Badges
+
+@docs badgeMD, badgeSM
+
+
+# Structure
+
+@docs default, system
+
+
+# Contexte de badge
+
+@docs Context
+
+
+# Groupe de badges
+
+@docs groupMD, groupSM
+
+
+# Configuration
+
+@docs withColor, withAttrs
+
+-}
 
 import Accessibility exposing (Attribute, Html, li, p, span, ul)
 import BetaGouv.DSFR.Color exposing (CustomColor)
@@ -21,6 +56,7 @@ type Size
     | MD
 
 
+{-| -}
 type Context
     = Success
     | Error
@@ -33,28 +69,28 @@ customColorToClass : CustomColor -> String
 customColorToClass customColor =
     (++) "fr-badge--" <|
         case customColor of
-            DSFR.Color.Standard ->
+            BetaGouv.DSFR.Color.Standard ->
                 ""
 
-            DSFR.Color.GreenEmeraude ->
+            BetaGouv.DSFR.Color.GreenEmeraude ->
                 "green-emeraude"
 
-            DSFR.Color.GreenMenthe ->
+            BetaGouv.DSFR.Color.GreenMenthe ->
                 "green-menthe"
 
-            DSFR.Color.BlueCumulus ->
+            BetaGouv.DSFR.Color.BlueCumulus ->
                 "blue-cumulus"
 
-            DSFR.Color.BlueFrance ->
+            BetaGouv.DSFR.Color.BlueFrance ->
                 "blue-france"
 
-            DSFR.Color.BrownCaramel ->
+            BetaGouv.DSFR.Color.BrownCaramel ->
                 "brown-caramel"
 
-            DSFR.Color.BrownOpera ->
+            BetaGouv.DSFR.Color.BrownOpera ->
                 "brown-opera"
 
-            DSFR.Color.PurpleGlycine ->
+            BetaGouv.DSFR.Color.PurpleGlycine ->
                 "purple-glycine"
 
 
@@ -78,31 +114,59 @@ contextToClass context =
                 "new"
 
 
+{-| Crée un badge de taille medium
+
+    text "badge medium"
+        |> Badge.system { context = DSFR.Badge.New, withIcon = True }
+        |> Badge.badgeMD
+
+-}
 badgeMD : BadgeConfig -> Html msg
 badgeMD =
     badge MD
 
 
+{-| Crée un badge de petite taille
+
+    text "petit badge"
+        |> Badge.system { context = Badge.New, withIcon = True }
+        |> Badge.badgeSM
+
+-}
 badgeSM : BadgeConfig -> Html msg
 badgeSM =
     badge SM
 
 
+{-| Crée un group de badges mediums
+-}
 groupMD : List BadgeConfig -> Html msg
 groupMD =
     group MD
 
 
+{-| Crée un group de petits badges
+-}
 groupSM : List BadgeConfig -> Html msg
 groupSM =
     group SM
 
 
+{-| Badge par défaut
+
+    text "badge"
+        |> Badge.default
+        |> Badge.withColor Color.purpleGlycine
+        |> Badge.badgeMD
+
+-}
 default : Html Never -> BadgeConfig
 default label =
-    Default { label = label, color = DSFR.Color.standard } []
+    Default { label = label, color = BetaGouv.DSFR.Color.standard } []
 
 
+{-| Définit la couleur du badge par défaut
+-}
 withColor : CustomColor -> BadgeConfig -> BadgeConfig
 withColor color config =
     case config of
@@ -113,11 +177,20 @@ withColor color config =
             config
 
 
+{-| Badge système (avec icône optionnelle)
+
+    text "badge"
+        |> Badge.system { context = Badge.New, withIcon = True }
+        |> Badge.badgeSM
+
+-}
 system : { context : Context, withIcon : Bool } -> Html Never -> BadgeConfig
 system { context, withIcon } label =
     System { label = label, context = context, withIcon = withIcon } []
 
 
+{-| Ajoute des attributs au badge
+-}
 withAttrs : List (Attribute Never) -> BadgeConfig -> BadgeConfig
 withAttrs attrs config =
     case config of

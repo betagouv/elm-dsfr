@@ -1,4 +1,27 @@
-module BetaGouv.DSFR.Alert exposing (alert, error, info, medium, small, success, warning)
+module BetaGouv.DSFR.Alert exposing
+    ( alert
+    , small, medium
+    , error, info, success, warning
+    )
+
+{-|
+
+
+# Alerte
+
+@docs alert
+
+
+# Tailles d'alerte
+
+@docs small, medium
+
+
+# Types d'alerte
+
+@docs error, info, success, warning
+
+-}
 
 import Accessibility exposing (Html, button, div, p, text)
 import Accessibility.Role
@@ -24,16 +47,26 @@ type alias AlertConfig msg =
     Maybe msg
 
 
+{-| Alerte de petite taille
+-}
 small : { title : Maybe String, description : String } -> AlertSize
 small =
     SM
 
 
+{-| Alerte de taille medium
+-}
 medium : { title : String, description : Maybe String } -> AlertSize
 medium =
     MD
 
 
+{-| Crée une alerte
+
+    Alert.small { title = Just "Titre", description = "Description" }
+        |> Alert.alert (Just Close) Alert.error
+
+-}
 alert : AlertConfig msg -> AlertType -> AlertSize -> Html msg
 alert closeMsg type_ size =
     let
@@ -79,7 +112,7 @@ alert closeMsg type_ size =
         , viewMaybe
             (\close ->
                 button
-                    [ class "fr-link--close fr-link"
+                    [ class "fr-btn--close fr-btn"
                     , Events.onClick close
                     ]
                     [ text "Masquer le message" ]
@@ -88,21 +121,29 @@ alert closeMsg type_ size =
         ]
 
 
+{-| Une alerte de type erreur
+-}
 error : AlertType
 error =
     Error
 
 
+{-| Une alerte de type succès
+-}
 success : AlertType
 success =
     Success
 
 
+{-| Une alerte de type information
+-}
 info : AlertType
 info =
     Info
 
 
+{-| Une alerte de type attention
+-}
 warning : AlertType
 warning =
     Warning

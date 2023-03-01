@@ -1,7 +1,13 @@
-module BetaGouv.DSFR.Accordion exposing (group, raw, single)
+module BetaGouv.DSFR.Accordion exposing (group, single)
+
+{-| Accordéons
+
+@docs group, single
+
+-}
 
 import Accessibility exposing (Html, button, div, p, section)
-import Accessibility.Aria exposing (expanded)
+import Accessibility.Aria exposing (controls, expanded)
 import Html.Attributes as Attr exposing (class, classList)
 import Html.Events as Events
 import Html.Extra exposing (static)
@@ -27,21 +33,35 @@ type alias AccordionGroup msg data =
     }
 
 
+{-| Crée un accordéon
+
+    Accordion.single
+        { id = "filter-group-localisation"
+        , open = False
+        , onClick = Open
+        , header = text "Header"
+        , content = []
+        }
+
+-}
 single : Accordion msg -> Html msg
 single { id, open, onClick, header, content } =
-    section [ class "fr-accordion", Attr.id id ]
+    section [ class "fr-accordion" ]
         [ p [ class "fr-accordion__title" ]
             [ button
                 [ class "fr-accordion__btn"
+                , controls [ id ]
                 , expanded open
                 , Events.onClick onClick
                 ]
                 [ static header ]
             ]
-        , div [ class "fr-collapse" ] [ content ]
+        , div [ class "fr-collapse", Attr.id id ] [ content ]
         ]
 
 
+{-| Crée un groupe d'accordéons
+-}
 group : AccordionGroup msg data -> Html msg
 group { id, accordions, opened, onClick, toId, toHeader, toContent } =
     div [ class "fr-accordions-group", Attr.id id ] <|
@@ -57,23 +77,3 @@ group { id, accordions, opened, onClick, toId, toHeader, toContent } =
             )
         <|
             accordions
-
-
-raw : { id : String, title : List (Html msg), content : List (Html msg), borderless : Bool } -> Html msg
-raw { id, title, content, borderless } =
-    section
-        [ class "fr-accordion"
-        , classList [ ( "fr-accordion-borderless", borderless ) ]
-        ]
-        [ div [ class "fr-accordion__title" ]
-            [ button
-                [ class "fr-accordion__btn"
-                , Attr.id <| id ++ "--button"
-                , Accessibility.Aria.controls [ id ]
-                , Accessibility.Aria.expanded False
-                ]
-              <|
-                title
-            ]
-        , div [ class "fr-collapse", Attr.id <| id ] <| content
-        ]
