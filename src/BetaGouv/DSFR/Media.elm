@@ -1,4 +1,27 @@
-module BetaGouv.DSFR.Media exposing (decorativeImg, decorativeImgLG, decorativeImgSM, decorativeSvg, img, imgLG, imgSM, svg, withCaption, withResponsive)
+module BetaGouv.DSFR.Media exposing
+    ( img, imgLG, imgSM, svg
+    , decorativeImg, decorativeImgLG, decorativeImgSM, decorativeSvg
+    , withCaption, withResponsive
+    )
+
+{-|
+
+
+# Image
+
+@docs img, imgLG, imgSM, svg
+
+
+# Image décorative
+
+@docs decorativeImg, decorativeImgLG, decorativeImgSM, decorativeSvg
+
+
+# Configuration
+
+@docs withCaption, withResponsive
+
+-}
 
 import Accessibility exposing (Attribute, Html, div, figcaption, figure, text)
 import Accessibility.Aria exposing (hidden, label)
@@ -61,16 +84,27 @@ genericCaption =
     Html.Extra.viewMaybe (text >> List.singleton >> figcaption [ class "fr-content-media__caption" ])
 
 
+{-| Crée une image de taille moyenne
+
+    Media.img "Image" [ src "image.png", class "w-full" ] <|
+        Media.withResponsive False <|
+            Media.withCaption Nothing
+
+-}
 img : String -> List (Attribute Never) -> ImageConfig -> Html msg
 img =
     genericImg MD
 
 
+{-| Crée une image de grande taille
+-}
 imgLG : String -> List (Attribute Never) -> ImageConfig -> Html msg
 imgLG =
     genericImg LG
 
 
+{-| Crée une image de petite taille
+-}
 imgSM : String -> List (Attribute Never) -> ImageConfig -> Html msg
 imgSM =
     genericImg SM
@@ -93,21 +127,28 @@ genericDecorativeImg size attrs (ImageConfig { caption, responsive }) =
         ]
 
 
+{-| Crée une image décorative de taille moyenne
+-}
 decorativeImg : List (Attribute Never) -> ImageConfig -> Html msg
 decorativeImg =
     genericDecorativeImg MD
 
 
+{-| Crée une image décorative de grande taille
+-}
 decorativeImgLG : List (Attribute Never) -> ImageConfig -> Html msg
 decorativeImgLG =
     genericDecorativeImg LG
 
 
+{-| Crée une image décorative de petite taille
+-}
 decorativeImgSM : List (Attribute Never) -> ImageConfig -> Html msg
 decorativeImgSM =
     genericDecorativeImg SM
 
 
+{-| -}
 svg : String -> ImageConfig -> List (Svg.Svg msg) -> Html msg
 svg alt (ImageConfig { caption }) children =
     imgWrapper MD caption <|
@@ -119,6 +160,7 @@ svg alt (ImageConfig { caption }) children =
         ]
 
 
+{-| -}
 decorativeSvg : ImageConfig -> List (Svg.Svg msg) -> Html msg
 decorativeSvg (ImageConfig { caption }) children =
     imgWrapper MD caption <|
@@ -130,11 +172,13 @@ decorativeSvg (ImageConfig { caption }) children =
         ]
 
 
+{-| -}
 withCaption : Maybe String -> ImageConfig
 withCaption caption =
     ImageConfig { caption = caption, responsive = True }
 
 
+{-| -}
 withResponsive : Bool -> ImageConfig -> ImageConfig
 withResponsive responsive (ImageConfig config) =
     ImageConfig { config | responsive = responsive }
