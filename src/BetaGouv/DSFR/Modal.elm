@@ -1,4 +1,13 @@
-module BetaGouv.DSFR.Modal exposing (Config, view)
+module BetaGouv.DSFR.Modal exposing (view)
+
+{-|
+
+
+# Modal
+
+@docs view
+
+-}
 
 import Accessibility exposing (Html, div, h1)
 import Accessibility.Aria exposing (controls, labelledBy)
@@ -19,6 +28,22 @@ type alias Config msg =
     }
 
 
+{-| Crée une modale
+
+    Modal.view
+        { id = "id"
+        , label = "Ouvrir la modale"
+        , openMsg = Open
+        , closeMsg = Just Close
+        , title = text "Titre"
+        , opened = True
+        }
+        (text "Contenu")
+        Nothing
+
+Retourne, sous forme d'un tuple, la modale et le bouton d'ouverture
+
+-}
 view : Config msg -> Html msg -> Maybe (Html msg) -> ( Html msg, Html msg )
 view config content footer =
     let
@@ -29,12 +54,12 @@ view config content footer =
             modalId ++ "--title"
 
         but =
-            DSFR.Button.new
+            BetaGouv.DSFR.Button.new
                 { onClick = Just config.openMsg
                 , label = config.label
                 }
-                |> DSFR.Button.withAttrs [ controls [ modalId ] ]
-                |> DSFR.Button.view
+                |> BetaGouv.DSFR.Button.withAttrs [ controls [ modalId ] ]
+                |> BetaGouv.DSFR.Button.view
 
         modal =
             node "dialog"
@@ -67,16 +92,16 @@ view config content footer =
                                             nothing
 
                                         Just closeMsg ->
-                                            DSFR.Button.new
+                                            BetaGouv.DSFR.Button.new
                                                 { label = "Fermer"
                                                 , onClick = Just closeMsg
                                                 }
-                                                |> DSFR.Button.withAttrs
+                                                |> BetaGouv.DSFR.Button.withAttrs
                                                     [ Attr.title "Fermer la fenêtre modale"
                                                     , Attr.attribute "aria-controls" modalId
                                                     ]
-                                                |> DSFR.Button.close
-                                                |> DSFR.Button.view
+                                                |> BetaGouv.DSFR.Button.close
+                                                |> BetaGouv.DSFR.Button.view
                                     ]
                                 , div
                                     [ class "fr-modal__content"
