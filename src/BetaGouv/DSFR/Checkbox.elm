@@ -1,4 +1,42 @@
-module BetaGouv.DSFR.Checkbox exposing (CheckboxConfig, GroupConfig, MandatoryConfig, MandatoryGroupConfig, OptionalConfig, OptionalGroupConfig, Orientation, defaultOptionalConfig, defaultOptionalGroupConfig, group, groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithOrientation, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess, horizontal, inline, single, singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess, stacked, vertical, viewGroup, viewSingle)
+module BetaGouv.DSFR.Checkbox exposing
+    ( single, viewSingle
+    , singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess
+    , group, viewGroup
+    , inline, stacked
+    , groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess
+    )
+
+{-|
+
+
+# Case à cocher
+
+@docs single, viewSingle
+
+
+## Configuration
+
+@docs singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess
+
+
+# Groupe
+
+
+## Création
+
+@docs group, viewGroup
+
+
+## Orientation
+
+@docs inline, stacked
+
+
+## Configuration
+
+@docs groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess
+
+-}
 
 import Accessibility exposing (Attribute, Html, checkbox, div, fieldset, legend, p, span, text)
 import Accessibility.Aria exposing (describedBy, labelledBy)
@@ -43,6 +81,8 @@ defaultOptionalConfig =
     }
 
 
+{-| Affiche une checkbox
+-}
 viewSingle : CheckboxConfig msg data -> Html msg
 viewSingle ( { value, checked, valueAsString, id, label, onChecked }, { hint, disabled, error, success } ) =
     div
@@ -73,26 +113,43 @@ viewSingle ( { value, checked, valueAsString, id, label, onChecked }, { hint, di
         ]
 
 
+{-| Crée une checkbox
+
+    Checkbox.single
+        { value = "value"
+        , checked = Just True
+        , valueAsString = identity
+        , id = "id"
+        , label = "label"
+        , onChecked = ToggleSelection
+        }
+        |> Checkbox.viewSingle
+
+-}
 single : MandatoryConfig msg data -> ( MandatoryConfig msg data, OptionalConfig )
 single config =
     Tuple.pair config defaultOptionalConfig
 
 
+{-| -}
 singleWithHint : Maybe String -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
 singleWithHint hint ( mandatory, optional ) =
     ( mandatory, { optional | hint = hint } )
 
 
+{-| -}
 singleWithDisabled : Bool -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
 singleWithDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
 
 
+{-| -}
 singleWithError : Maybe String -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
 singleWithError error ( mandatory, optional ) =
     ( mandatory, { optional | error = error } )
 
 
+{-| -}
 singleWithSuccess : Maybe String -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
 singleWithSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
@@ -150,11 +207,29 @@ type Orientation
     | Vertical
 
 
+{-| Crée un groupe de case à cocher
+
+    Checkbox.group
+        { id = "id"
+        , label = text "label"
+        , onChecked = Action
+        , values = values
+        , checked = checkedValues
+        , valueAsString = identity
+        , toId = identity
+        , toLabel = identity
+        }
+        |> Checkbox.inline
+        |> Checkbox.viewGroup
+
+-}
 group : MandatoryGroupConfig msg data -> GroupConfig msg data
 group config =
     Tuple.pair config defaultOptionalGroupConfig
 
 
+{-| Affiche le groupe
+-}
 viewGroup : GroupConfig msg data -> Html msg
 viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabel }, { hint, disabled, error, success, orientation, toHint, toDisabled, toError, toSuccess, extraAttrs } ) =
     let
@@ -220,71 +295,73 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
         ]
 
 
+{-| -}
 groupWithHint : Maybe String -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithHint hint ( mandatory, optional ) =
     ( mandatory, { optional | hint = hint } )
 
 
+{-| -}
 groupWithDisabled : Bool -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
 
 
+{-| -}
 groupWithError : Maybe String -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithError error ( mandatory, optional ) =
     ( mandatory, { optional | error = error } )
 
 
+{-| -}
 groupWithSuccess : Maybe String -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
 
 
+{-| -}
 groupWithOrientation : Orientation -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithOrientation orientation ( mandatory, optional ) =
     ( mandatory, { optional | orientation = orientation } )
 
 
-horizontal : ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
-horizontal =
-    groupWithOrientation Horizontal
-
-
+{-| -}
 inline : ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 inline =
     groupWithOrientation Horizontal
 
 
-vertical : ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
-vertical =
-    groupWithOrientation Vertical
-
-
+{-| -}
 stacked : ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 stacked =
     groupWithOrientation Vertical
 
 
+{-| -}
 groupWithToHint : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithToHint toHint ( mandatory, optional ) =
     ( mandatory, { optional | toHint = toHint } )
 
 
+{-| -}
 groupWithToDisabled : (data -> Bool) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithToDisabled toDisabled ( mandatory, optional ) =
     ( mandatory, { optional | toDisabled = toDisabled } )
 
 
+{-| -}
 groupWithToError : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithToError toError ( mandatory, optional ) =
     ( mandatory, { optional | toError = toError } )
 
 
+{-| -}
 groupWithToSuccess : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithToSuccess toSuccess ( mandatory, optional ) =
     ( mandatory, { optional | toSuccess = toSuccess } )
 
 
+{-| -}
 groupWithExtraAttrs : List (Attribute Never) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
 groupWithExtraAttrs extraAttrs ( mandatory, optional ) =
     ( mandatory, { optional | extraAttrs = extraAttrs } )

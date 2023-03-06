@@ -1,4 +1,33 @@
-module BetaGouv.DSFR.Card exposing (card, horizontal, link, linkFull, vertical, view, withArrow, withDescription, withDetails, withImage, withNoTitle)
+module BetaGouv.DSFR.Card exposing
+    ( card, view
+    , link, linkFull
+    , horizontal, vertical
+    , withArrow, withDescription, withDetails, withImage, withNoTitle
+    )
+
+{-| Carte
+
+
+# Carte
+
+@docs card, view
+
+
+# Lien
+
+@docs link, linkFull
+
+
+# Orientation
+
+@docs horizontal, vertical
+
+
+# Configuration
+
+@docs withArrow, withDescription, withDetails, withImage, withNoTitle
+
+-}
 
 import Accessibility exposing (Html, a, decorativeImg, div, h4, p, text)
 import Html.Attributes as Attr exposing (class)
@@ -38,56 +67,76 @@ type Orientation
     | Vertical
 
 
+{-| -}
 link : String -> CardConfig msg -> CardConfig msg
 link href ( t, o, options ) =
     ( t, o, { options | href = Just href } )
 
 
+{-| -}
 linkFull : String -> CardConfig msg -> CardConfig msg
 linkFull href ( t, o, options ) =
     ( t, o, { options | href = Just href, fullLink = True } )
 
 
+{-| -}
 withImage : Maybe String -> CardConfig msg -> CardConfig msg
 withImage src ( t, o, options ) =
     ( t, o, { options | imageSrc = src } )
 
 
+{-| -}
 withArrow : Bool -> CardConfig msg -> CardConfig msg
 withArrow arrow ( t, o, options ) =
     ( t, o, { options | arrow = arrow } )
 
 
+{-| -}
 withDescription : Maybe (Html msg) -> CardConfig msg -> CardConfig msg
 withDescription description ( t, o, options ) =
     ( t, o, { options | description = description } )
 
 
+{-| -}
 withDetails : Maybe (Html msg) -> CardConfig msg -> CardConfig msg
 withDetails details ( t, o, options ) =
     ( t, o, { options | details = details } )
 
 
+{-| -}
 withNoTitle : CardConfig msg -> CardConfig msg
 withNoTitle ( t, o, options ) =
     ( t, o, { options | noTitle = True } )
 
 
+{-| -}
 vertical : Orientation
 vertical =
     Vertical
 
 
+{-| -}
 horizontal : Orientation
 horizontal =
     Horizontal
 
 
+{-| Crée une carte
+
+    Card.card "titre" Card.vertical
+        |> Card.link "/url"
+        |> Card.withArrow False
+        |> Card.withNoTitle
+        |> Card.withDescription (Just (text description))
+        |> Card.view
+
+-}
 card : String -> Orientation -> CardConfig msg
 card title orientation =
     ( title, orientation, defaultOptions )
 
 
+{-| -}
 view : CardConfig msg -> Html msg
 view ( title, orientation, { href, fullLink, imageSrc, description, details, arrow, noTitle } ) =
     let
