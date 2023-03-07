@@ -1,5 +1,14 @@
 module BetaGouv.DSFR.SearchBar exposing (searchBar, searchBarLG)
 
+{-|
+
+
+# Barre de recherche
+
+@docs searchBar, searchBarLG
+
+-}
+
 import Accessibility exposing (Html, div, formWithListeners, inputText, label, span, text)
 import Accessibility.Landmark
 import BetaGouv.DSFR.Button
@@ -47,7 +56,7 @@ genericSearchBar size { submitMsg, inputMsg, buttonLabel, inputLabel, inputPlace
                 _ ->
                     span [ Attr.class "fr-hint-text" ] hints
     in
-    div [ class "flex flex-col gap-2"]
+    div [ class "flex flex-col gap-2" ]
         [ case fullLabel of
             Just l ->
                 label
@@ -82,19 +91,36 @@ genericSearchBar size { submitMsg, inputMsg, buttonLabel, inputLabel, inputPlace
                 , Events.on "search" <|
                     Decode.succeed submitMsg
                 ]
-            , DSFR.Button.new { onClick = Nothing, label = buttonLabel }
-                |> DSFR.Button.submit
-                |> DSFR.Button.withAttrs [ Attr.title buttonLabel ]
-                |> DSFR.Button.view
+            , BetaGouv.DSFR.Button.new { onClick = Nothing, label = buttonLabel }
+                |> BetaGouv.DSFR.Button.submit
+                |> BetaGouv.DSFR.Button.withAttrs [ Attr.title buttonLabel ]
+                |> BetaGouv.DSFR.Button.view
             ]
         ]
 
 
+{-| Crée une barre de recherche
+
+    SearchBar.searchBar
+        { submitMsg = SubmitSearch
+        , buttonLabel = "Rechercher"
+        , inputMsg = UpdatedSearch
+        , inputLabel = "Rechercher un contact"
+        , inputPlaceholder = Just "Recherche par email, nom, prénom"
+        , inputId = "id"
+        , inputValue = value
+        , hints = []
+        , fullLabel = Nothing
+        }
+
+-}
 searchBar : MandatoryConfig msg -> Html msg
 searchBar =
     genericSearchBar MD
 
 
+{-| Crée une grande barre de recherche
+-}
 searchBarLG : MandatoryConfig msg -> Html msg
 searchBarLG =
     genericSearchBar LG

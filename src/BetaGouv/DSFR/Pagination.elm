@@ -1,4 +1,13 @@
-module BetaGouv.DSFR.Pagination exposing (..)
+module BetaGouv.DSFR.Pagination exposing (view)
+
+{-|
+
+
+# Pagination
+
+@docs view
+
+-}
 
 import Accessibility exposing (Attribute, Html, li, text, ul)
 import BetaGouv.DSFR.Icons
@@ -10,6 +19,11 @@ import Html.Attributes.Extra exposing (empty)
 import Html.Extra exposing (nothing)
 
 
+{-| Crée une pagination
+
+    Pagination.view currentPage total toHref
+
+-}
 view : Int -> Int -> (Int -> String) -> Html msg
 view current total toHref =
     let
@@ -123,8 +137,8 @@ shownPage toHref current page =
 truncatedPage : Html Never
 truncatedPage =
     toLink [ class "" ] True False "" <|
-        DSFR.Icons.iconMD <|
-            DSFR.Icons.System.moreLine
+        BetaGouv.DSFR.Icons.iconMD <|
+            BetaGouv.DSFR.Icons.System.moreLine
 
 
 toLink : List (Attribute Never) -> Bool -> Bool -> String -> Html Never -> Html Never
@@ -155,7 +169,7 @@ toLink attrs disabled current href label =
                 empty
     in
     li []
-        [ DSFR.Typography.link actualHref
+        [ BetaGouv.DSFR.Typography.link actualHref
             (class "fr-pagination__link fr-pagination__link--lg-label !mb-0"
                 :: ariaDisabled
                 :: ariaCurrent

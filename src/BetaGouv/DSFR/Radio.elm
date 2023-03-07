@@ -1,22 +1,37 @@
-module BetaGouv.DSFR.Radio exposing (Item, group, inline, stacked, view, viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendExtra, withSuccess, withLegendAttrs)
+module BetaGouv.DSFR.Radio exposing
+    ( group, view
+    , inline, stacked
+    , viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendAttrs, withLegendExtra, withSuccess
+    )
+
+{-|
+
+
+# Groupe de bouton radio
+
+@docs group, view
+
+
+## Orientation
+
+@docs inline, stacked
+
+
+## Configuration
+
+@docs viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendAttrs, withLegendExtra, withSuccess
+
+-}
 
 import Accessibility exposing (Attribute, Html, decorativeImg, div, fieldset, label, p, span, text)
 import Accessibility.Aria exposing (labelledBy)
 import Accessibility.Role
-import BetaGouv.DSFR.Grid
 import Html exposing (input)
 import Html.Attributes as Attr exposing (class, classList)
 import Html.Attributes.Extra exposing (attributeMaybe, empty)
 import Html.Events as Events
 import Html.Extra exposing (static, viewMaybe)
 import Html.Keyed as Keyed
-
-
-type alias Item value msg =
-    { content : Html msg
-    , name : String
-    , value : value
-    }
 
 
 type alias GroupConfig msg data =
@@ -70,16 +85,36 @@ defaultOptions =
     }
 
 
+{-| Crée un groupe de boutons radio
+
+    Radio.group
+        { id = "group-id"
+        , options = options
+        , current = Just option
+        , toLabel = optionToLabel >> text
+        , toId = optionToId
+        , msg = ClickOption
+        , legend = text "Légende du groupe"
+        }
+        |> Radio.withError formErrors
+        |> Radio.inline
+        |> Radio.view
+
+-}
 group : MandatoryConfig msg data -> GroupConfig msg data
 group mandatory =
     ( mandatory, defaultOptions )
 
 
+{-| Affiche un groupe de boutons radio
+-}
 view : GroupConfig msg data -> Html msg
 view =
     viewGeneric Nothing
 
 
+{-| Affiche un groupe de boutons radio illustrés
+-}
 viewRich : (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> Html msg
 viewRich toSrc =
     viewGeneric <| Just toSrc
@@ -91,14 +126,14 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
         inlineAttrs =
             case orientation of
                 Horizontal ->
-                    [ class "fr-fieldset--inline", DSFR.Grid.col ]
+                    [ class "fr-fieldset--inline", class "fr-col" ]
 
                 Vertical ->
                     []
     in
     div
         (class "fr-form-group"
-            :: DSFR.Grid.col
+            :: class "fr-col"
             :: extraAttrs
         )
         [ fieldset
@@ -123,7 +158,7 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
                 [ legend
                 , viewMaybe (List.singleton >> span [ class "fr-hint-text" ]) legendExtra
                 ]
-            , Keyed.node "div" [ class "fr-fieldset__content", DSFR.Grid.col ] <|
+            , Keyed.node "div" [ class "fr-fieldset__content", class "fr-col" ] <|
                 List.map
                     (\option ->
                         let
@@ -137,7 +172,7 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
                         , div
                             [ class "fr-radio-group"
                             , classList [ ( "fr-radio-rich", toSrc /= Nothing ) ]
-                            , DSFR.Grid.col
+                            , class "fr-col"
                             ]
                             [ input
                                 [ Attr.type_ "radio"
@@ -184,51 +219,61 @@ viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHi
         ]
 
 
+{-| -}
 inline : GroupConfig msg data -> GroupConfig msg data
 inline ( mandatory, optional ) =
     ( mandatory, { optional | orientation = Horizontal } )
 
 
+{-| -}
 stacked : GroupConfig msg data -> GroupConfig msg data
 stacked ( mandatory, optional ) =
     ( mandatory, { optional | orientation = Vertical } )
 
 
+{-| -}
 withHint : Maybe (data -> Html msg) -> GroupConfig msg data -> GroupConfig msg data
 withHint toHint ( mandatory, optional ) =
     ( mandatory, { optional | toHint = toHint } )
 
 
+{-| -}
 withLegendExtra : Maybe (Html msg) -> GroupConfig msg data -> GroupConfig msg data
 withLegendExtra legendExtra ( mandatory, optional ) =
     ( mandatory, { optional | legendExtra = legendExtra } )
 
 
+{-| -}
 withError : Maybe String -> GroupConfig msg data -> GroupConfig msg data
 withError error ( mandatory, optional ) =
     ( mandatory, { optional | error = error } )
 
 
+{-| -}
 withSuccess : Maybe String -> GroupConfig msg data -> GroupConfig msg data
 withSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
 
 
+{-| -}
 withDisabled : Bool -> GroupConfig msg data -> GroupConfig msg data
 withDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
 
 
+{-| -}
 withDisabledOption : (data -> Bool) -> GroupConfig msg data -> GroupConfig msg data
 withDisabledOption disabledFn ( mandatory, optional ) =
     ( mandatory, { optional | disabledOption = disabledFn } )
 
 
+{-| -}
 withExtraAttrs : List (Attribute Never) -> GroupConfig msg data -> GroupConfig msg data
 withExtraAttrs extraAttrs ( mandatory, optional ) =
     ( mandatory, { optional | extraAttrs = extraAttrs } )
 
 
+{-| -}
 withLegendAttrs : List (Attribute Never) -> GroupConfig msg data -> GroupConfig msg data
 withLegendAttrs legendAttrs ( mandatory, optional ) =
     ( mandatory, { optional | legendAttrs = legendAttrs } )
