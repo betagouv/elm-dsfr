@@ -1,4 +1,27 @@
-module BetaGouv.DSFR.Tag exposing (..)
+module BetaGouv.DSFR.Tag exposing
+    ( medium, small
+    , unclickable, clickable, selectable, deletable
+    , withAttrs, withIcon
+    )
+
+{-|
+
+
+# Groupe de tag
+
+@docs medium, small
+
+
+# Tag
+
+@docs unclickable, clickable, selectable, deletable
+
+
+# Configuration d'un tag
+
+@docs withAttrs, withIcon
+
+-}
 
 import Accessibility exposing (Attribute, Html, a, button, li, p, text, ul)
 import Accessibility.Aria exposing (pressed)
@@ -60,21 +83,25 @@ type Icon
     | RightIcon IconName
 
 
+{-| -}
 unclickable : MandatoryConfig data -> TagConfig msg data
 unclickable config =
     ( config, Unclickable, defaultOptions )
 
 
+{-| -}
 clickable : String -> MandatoryConfig data -> TagConfig msg data
 clickable link label =
     ( label, Clickable (Href link), defaultOptions )
 
 
+{-| -}
 selectable : (data -> msg) -> Bool -> MandatoryConfig data -> TagConfig msg data
 selectable selectMsg checked label =
     ( label, Selectable (Checked checked) selectMsg, defaultOptions )
 
 
+{-| -}
 deletable : (data -> msg) -> MandatoryConfig data -> TagConfig msg data
 deletable deleteMsg label =
     ( label, Deletable deleteMsg, defaultOptions )
@@ -100,10 +127,10 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
                     empty
 
                 LeftIcon iconName ->
-                    class <| "fr-tag--icon-left " ++ DSFR.Icons.toClassName iconName
+                    class <| "fr-tag--icon-left " ++ BetaGouv.DSFR.Icons.toClassName iconName
 
                 RightIcon iconName ->
-                    class <| "fr-tag--icon-right " ++ DSFR.Icons.toClassName iconName
+                    class <| "fr-tag--icon-right " ++ BetaGouv.DSFR.Icons.toClassName iconName
     in
     case tag of
         Unclickable ->
@@ -150,11 +177,23 @@ view size ( { data, toString }, tag, { icon, extraAttrs } ) =
                 [ text <| toString data ]
 
 
+{-| Crée un groupe de petits tags
+
+    List.map (\item -> Tag.deletable UnselectItem { data = item, toString = identity })
+        |> Tag.small
+
+-}
 small : List (TagConfig msg data) -> Html msg
 small =
     group SM
 
 
+{-| Crée un groupe de tags avec une taille par défaut
+
+    List.map (\item -> Tag.deletable UnselectItem { data = item, toString = identity })
+        |> Tag.medium
+
+-}
 medium : List (TagConfig msg data) -> Html msg
 medium =
     group MD
@@ -167,11 +206,13 @@ group size configs =
             configs
 
 
+{-| -}
 withAttrs : List (Attribute Never) -> TagConfig msg data -> TagConfig msg data
 withAttrs extraAttrs ( mandatory, tag, optional ) =
     ( mandatory, tag, { optional | extraAttrs = extraAttrs } )
 
 
-withIcon : DSFR.Icons.IconName -> TagConfig msg data -> TagConfig msg data
+{-| -}
+withIcon : BetaGouv.DSFR.Icons.IconName -> TagConfig msg data -> TagConfig msg data
 withIcon iconName ( mandatory, tag, optional ) =
     ( mandatory, tag, { optional | icon = LeftIcon iconName } )
