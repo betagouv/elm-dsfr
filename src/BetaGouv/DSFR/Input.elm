@@ -1,7 +1,7 @@
 module BetaGouv.DSFR.Input exposing
     ( new, view
-    , date, email, number, password, textArea, textDisplay, text
-    , withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType
+    , textArea, date, email, number, password, textDisplay, text
+    , withDisabled, withValid, withError, withExtraAttrs, withHint, withReadonly, withType, withIcon
     )
 
 {-|
@@ -14,12 +14,12 @@ module BetaGouv.DSFR.Input exposing
 
 # Types de champ de saisie
 
-@docs date, email, number, password, textArea, textDisplay, text
+@docs textArea, date, email, number, password, textDisplay, text
 
 
 # Configuration
 
-@docs withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType
+@docs withDisabled, withValid, withError, withExtraAttrs, withHint, withReadonly, withType, withIcon
 
 -}
 
@@ -56,15 +56,15 @@ type InputType
         |> Input.view
 
 -}
-new : MandatoryInputConfig msg -> InputConfig msg
+new :
+    { value : String
+    , onInput : String -> msg
+    , label : Html Never
+    , name : String
+    }
+    -> InputConfig msg
 new mandatory =
     { mandatory = mandatory, optional = defaultOptions }
-
-
-{-| -}
-withOptions : OptionalInputConfig msg -> InputConfig msg -> InputConfig msg
-withOptions optional config =
-    { config | optional = optional }
 
 
 {-| -}
@@ -80,6 +80,12 @@ withError errorMsg { mandatory, optional } =
 
 
 {-| -}
+withValid : Maybe (List (Html msg)) -> InputConfig msg -> InputConfig msg
+withValid validMsg { mandatory, optional } =
+    { mandatory = mandatory, optional = { optional | validMsg = validMsg } }
+
+
+{-| -}
 withDisabled : Bool -> InputConfig msg -> InputConfig msg
 withDisabled disabled { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | disabled = disabled } }
@@ -89,6 +95,12 @@ withDisabled disabled { mandatory, optional } =
 withReadonly : Bool -> InputConfig msg -> InputConfig msg
 withReadonly readonly { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | readonly = readonly } }
+
+
+{-| -}
+withIcon : Maybe String -> InputConfig msg -> InputConfig msg
+withIcon icon { mandatory, optional } =
+    { mandatory = mandatory, optional = { optional | icon = icon } }
 
 
 {-| -}
