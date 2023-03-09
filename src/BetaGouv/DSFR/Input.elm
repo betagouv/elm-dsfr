@@ -1,6 +1,6 @@
 module BetaGouv.DSFR.Input exposing
     ( new, view
-    , date, email, number, password, textArea, textDisplay
+    , date, email, number, password, textArea, textDisplay, text
     , withDisabled, withError, withExtraAttrs, withHint, withOptions, withReadonly, withType
     )
 
@@ -14,7 +14,7 @@ module BetaGouv.DSFR.Input exposing
 
 # Types de champ de saisie
 
-@docs date, email, number, password, textArea, textDisplay
+@docs date, email, number, password, textArea, textDisplay, text
 
 
 # Configuration
@@ -113,6 +113,12 @@ withType type_ { mandatory, optional } =
 textArea : Maybe Int -> InputConfig msg -> InputConfig msg
 textArea rows =
     withType <| TextArea rows
+
+
+{-| -}
+text : InputConfig msg -> InputConfig msg
+text =
+    withType <| TextInput
 
 
 {-| -}
