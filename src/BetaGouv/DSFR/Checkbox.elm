@@ -254,63 +254,60 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
         inlineClass =
             case orientation of
                 Horizontal ->
-                    class "fr-fieldset--inline"
+                    class "fr-fieldset__element--inline"
 
                 Vertical ->
                     empty
+
+        viewElement v =
+            div
+                [ class "fr-fieldset__element", inlineClass ]
+                [ single
+                    { value = v
+                    , checked = Just <| List.member v checked
+                    , valueAsString = valueAsString
+                    , id = id ++ "-option-" ++ toId v
+                    , label = toLabel v
+                    , onChecked = onChecked
+                    }
+                    |> singleWithHint (toHint v)
+                    |> singleWithDisabled (toDisabled v)
+                    |> singleWithError (toError v)
+                    |> singleWithSuccess (toSuccess v)
+                    |> viewSingle
+                ]
     in
-    div
-        (class "fr-form-group"
-            :: extraAttrs
+    fieldset
+        ([ class "fr-fieldset"
+         , Attr.id id
+         , attributeMaybe (\_ -> class "fr-fieldset--error") error
+         , attributeMaybe (\_ -> Accessibility.Role.group) error
+         , attributeMaybe (\_ -> class "fr-fieldset--valid") success
+         , attributeMaybe (\_ -> Accessibility.Role.group) success
+         , Attr.disabled disabled
+         , labelledBy <|
+            String.join " " <|
+                List.filterMap identity <|
+                    [ Just <| id ++ "-legend"
+                    , Maybe.map (\_ -> id ++ "-desc-error") error
+                    , Maybe.map (\_ -> id ++ "-desc-valid") success
+                    ]
+         ]
+            ++ extraAttrs
         )
-        [ fieldset
-            [ class "fr-fieldset"
-            , Attr.id id
-            , inlineClass
-            , attributeMaybe (\_ -> class "fr-fieldset--error") error
-            , attributeMaybe (\_ -> Accessibility.Role.group) error
-            , attributeMaybe (\_ -> class "fr-fieldset--valid") success
-            , attributeMaybe (\_ -> Accessibility.Role.group) success
-            , Attr.disabled disabled
-            , labelledBy <|
-                String.join " " <|
-                    List.filterMap identity <|
-                        [ Just <| id ++ "-legend"
-                        , Maybe.map (\_ -> id ++ "-desc-error") error
-                        , Maybe.map (\_ -> id ++ "-desc-valid") success
-                        ]
+    <|
+        legend
+            [ class "fr-fieldset__legend"
+            , Typo.textRegular
+            , Attr.id <| id ++ "-legend"
             ]
-            [ legend
-                [ class "fr-fieldset__legend"
-                , Typo.textRegular
-                , Attr.id <| id ++ "-legend"
-                ]
-                [ label
-                , viewMaybe (\h -> span [ class "fr-hint-text" ] [ text h ]) hint
-                ]
-            , div [ class "fr-fieldset__content" ] <|
-                List.map
-                    (\v ->
-                        single
-                            { value = v
-                            , checked = Just <| List.member v checked
-                            , valueAsString = valueAsString
-                            , id = id ++ "-option-" ++ toId v
-                            , label = toLabel v
-                            , onChecked = onChecked
-                            }
-                            |> singleWithHint (toHint v)
-                            |> singleWithDisabled (toDisabled v)
-                            |> singleWithError (toError v)
-                            |> singleWithSuccess (toSuccess v)
-                            |> viewSingle
-                    )
-                <|
-                    values
-            , viewMaybe (\err -> p [ class "fr-error-text", Attr.id <| id ++ "-desc-error" ] [ text err ]) error
-            , viewMaybe (\suc -> p [ class "fr-valid-text", Attr.id <| id ++ "-desc-valid" ] [ text suc ]) success
+            [ label
+            , viewMaybe (\h -> span [ class "fr-hint-text" ] [ text h ]) hint
             ]
-        ]
+            :: List.map viewElement values
+            ++ [ viewMaybe (\err -> p [ class "fr-error-text", Attr.id <| id ++ "-desc-error" ] [ text err ]) error
+               , viewMaybe (\suc -> p [ class "fr-valid-text", Attr.id <| id ++ "-desc-valid" ] [ text suc ]) success
+               ]
 
 
 {-| -}

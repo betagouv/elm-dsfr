@@ -5,6 +5,7 @@ Un package Elm pour le [System de design du gouvernement français (DSFR)](https
 ## Installation
 
 En premier lieu, chargez les [feuilles de styles du DSFR](https://www.systeme-de-design.gouv.fr/utilisation-et-organisation/developpeurs/prise-en-main).
+Veuillez utiliser la version 1.8 ou supérieure.
 
 Puis installez les packages Elm suivants :
 
