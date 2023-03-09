@@ -101,7 +101,16 @@ defaultOptions =
         |> Radio.view
 
 -}
-group : MandatoryConfig msg data -> GroupConfig msg data
+group :
+    { id : String
+    , options : List data
+    , current : Maybe data
+    , toLabel : data -> Html Never
+    , toId : data -> String
+    , msg : data -> msg
+    , legend : Html msg
+    }
+    -> GroupConfig msg data
 group mandatory =
     ( mandatory, defaultOptions )
 

@@ -338,7 +338,7 @@ viewGroup { buttons, size, orientation, placement, icons, equisized } =
             buttons
 
 
-single : MandatoryButtonConfig msg -> ButtonConfig msg
+single : { onClick : Maybe msg, label : String } -> ButtonConfig msg
 single mandatory =
     { mandatory = mandatory, optional = defaultOptions }
 
@@ -348,7 +348,7 @@ single mandatory =
     Button.new { onClick = Just Action, label = "action" }
 
 -}
-new : MandatoryButtonConfig msg -> ButtonConfig msg
+new : { onClick : Maybe msg, label : String } -> ButtonConfig msg
 new =
     single
 
@@ -412,14 +412,8 @@ view { mandatory, optional } =
 
 
 type alias ButtonConfig msg =
-    { mandatory : MandatoryButtonConfig msg
+    { mandatory : { onClick : Maybe msg, label : String }
     , optional : OptionalButtonConfig msg
-    }
-
-
-type alias MandatoryButtonConfig msg =
-    { onClick : Maybe msg
-    , label : String
     }
 
 

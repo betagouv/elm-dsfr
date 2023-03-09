@@ -126,31 +126,39 @@ viewSingle ( { value, checked, valueAsString, id, label, onChecked }, { hint, di
         |> Checkbox.viewSingle
 
 -}
-single : MandatoryConfig msg data -> ( MandatoryConfig msg data, OptionalConfig )
+single :
+    { value : data
+    , checked : Maybe Bool
+    , valueAsString : data -> String
+    , id : String
+    , label : String
+    , onChecked : data -> Bool -> msg
+    }
+    -> CheckboxConfig msg data
 single config =
     Tuple.pair config defaultOptionalConfig
 
 
 {-| -}
-singleWithHint : Maybe String -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
+singleWithHint : Maybe String -> CheckboxConfig msg data -> CheckboxConfig msg data
 singleWithHint hint ( mandatory, optional ) =
     ( mandatory, { optional | hint = hint } )
 
 
 {-| -}
-singleWithDisabled : Bool -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
+singleWithDisabled : Bool -> CheckboxConfig msg data -> CheckboxConfig msg data
 singleWithDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
 
 
 {-| -}
-singleWithError : Maybe String -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
+singleWithError : Maybe String -> CheckboxConfig msg data -> CheckboxConfig msg data
 singleWithError error ( mandatory, optional ) =
     ( mandatory, { optional | error = error } )
 
 
 {-| -}
-singleWithSuccess : Maybe String -> ( MandatoryConfig msg data, OptionalConfig ) -> ( MandatoryConfig msg data, OptionalConfig )
+singleWithSuccess : Maybe String -> CheckboxConfig msg data -> CheckboxConfig msg data
 singleWithSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
 
@@ -223,7 +231,17 @@ type Orientation
         |> Checkbox.viewGroup
 
 -}
-group : MandatoryGroupConfig msg data -> GroupConfig msg data
+group :
+    { id : String
+    , label : Html msg
+    , onChecked : data -> Bool -> msg
+    , values : List data
+    , checked : List data
+    , valueAsString : data -> String
+    , toId : data -> String
+    , toLabel : data -> String
+    }
+    -> GroupConfig msg data
 group config =
     Tuple.pair config defaultOptionalGroupConfig
 
@@ -296,72 +314,72 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
 
 
 {-| -}
-groupWithHint : Maybe String -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithHint : Maybe String -> GroupConfig msg data -> GroupConfig msg data
 groupWithHint hint ( mandatory, optional ) =
     ( mandatory, { optional | hint = hint } )
 
 
 {-| -}
-groupWithDisabled : Bool -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithDisabled : Bool -> GroupConfig msg data -> GroupConfig msg data
 groupWithDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
 
 
 {-| -}
-groupWithError : Maybe String -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithError : Maybe String -> GroupConfig msg data -> GroupConfig msg data
 groupWithError error ( mandatory, optional ) =
     ( mandatory, { optional | error = error } )
 
 
 {-| -}
-groupWithSuccess : Maybe String -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithSuccess : Maybe String -> GroupConfig msg data -> GroupConfig msg data
 groupWithSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
 
 
 {-| -}
-groupWithOrientation : Orientation -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithOrientation : Orientation -> GroupConfig msg data -> GroupConfig msg data
 groupWithOrientation orientation ( mandatory, optional ) =
     ( mandatory, { optional | orientation = orientation } )
 
 
 {-| -}
-inline : ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+inline : GroupConfig msg data -> GroupConfig msg data
 inline =
     groupWithOrientation Horizontal
 
 
 {-| -}
-stacked : ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+stacked : GroupConfig msg data -> GroupConfig msg data
 stacked =
     groupWithOrientation Vertical
 
 
 {-| -}
-groupWithToHint : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithToHint : (data -> Maybe String) -> GroupConfig msg data -> GroupConfig msg data
 groupWithToHint toHint ( mandatory, optional ) =
     ( mandatory, { optional | toHint = toHint } )
 
 
 {-| -}
-groupWithToDisabled : (data -> Bool) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithToDisabled : (data -> Bool) -> GroupConfig msg data -> GroupConfig msg data
 groupWithToDisabled toDisabled ( mandatory, optional ) =
     ( mandatory, { optional | toDisabled = toDisabled } )
 
 
 {-| -}
-groupWithToError : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithToError : (data -> Maybe String) -> GroupConfig msg data -> GroupConfig msg data
 groupWithToError toError ( mandatory, optional ) =
     ( mandatory, { optional | toError = toError } )
 
 
 {-| -}
-groupWithToSuccess : (data -> Maybe String) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithToSuccess : (data -> Maybe String) -> GroupConfig msg data -> GroupConfig msg data
 groupWithToSuccess toSuccess ( mandatory, optional ) =
     ( mandatory, { optional | toSuccess = toSuccess } )
 
 
 {-| -}
-groupWithExtraAttrs : List (Attribute Never) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data ) -> ( MandatoryGroupConfig msg data, OptionalGroupConfig data )
+groupWithExtraAttrs : List (Attribute Never) -> GroupConfig msg data -> GroupConfig msg data
 groupWithExtraAttrs extraAttrs ( mandatory, optional ) =
     ( mandatory, { optional | extraAttrs = extraAttrs } )
