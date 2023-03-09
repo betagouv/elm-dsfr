@@ -11,7 +11,7 @@ Puis installez les packages Elm suivants :
 ```
 elm install tesk9/accessible-html
 elm install betagouv/elm-dsfr
-````
+```
 
 ## Exemples
 

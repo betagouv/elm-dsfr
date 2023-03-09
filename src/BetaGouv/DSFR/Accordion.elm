@@ -36,7 +36,7 @@ type alias AccordionGroup msg data =
 {-| Crée un accordéon
 
     Accordion.single
-        { id = "filter-group-localisation"
+        { id = "id"
         , open = False
         , onClick = Open
         , header = text "Header"

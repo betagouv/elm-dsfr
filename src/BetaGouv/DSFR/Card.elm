@@ -5,7 +5,7 @@ module BetaGouv.DSFR.Card exposing
     , withArrow, withDescription, withDetails, withImage, withNoTitle
     )
 
-{-| Carte
+{-|
 
 
 # Carte

@@ -6,7 +6,7 @@ module BetaGouv.DSFR.Badge exposing
     , withColor, withAttrs
     )
 
-{-| Badge
+{-|
 
 
 # Badges
