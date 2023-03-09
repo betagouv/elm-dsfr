@@ -30,7 +30,7 @@ import Html as Root
 import Html.Attributes as Attr
 import Html.Attributes.Extra exposing (empty)
 import Html.Events as Events
-import Html.Extra exposing (nothing)
+import Html.Extra exposing (nothing, static)
 import Json.Encode as Encode
 
 
@@ -280,35 +280,33 @@ view { mandatory, optional } =
                 ]
             :: extraAttrs
         )
-        [ Html.labelBefore [ Attr.class "h-full" ]
-            (Html.label
-                [ Attr.class "fr-label"
-                , Attr.for name
-                ]
-                [ label
-                , case hint of
-                    [] ->
-                        nothing
+    <|
+        [ Html.label
+            [ Attr.class "fr-label"
+            , Attr.for name
+            ]
+            [ static label
+            , case hint of
+                [] ->
+                    nothing
 
-                    hints ->
-                        Html.span [ Attr.class "fr-hint-text" ] hints
-                ]
-            )
-            (iconWrapper <|
-                inp
-            )
-        , Html.Extra.viewMaybe
-            (Html.p
-                [ Attr.id <| name ++ "-desc-valid"
-                , Attr.class "fr-valid-text"
-                ]
-            )
-            validMsg
-        , Html.Extra.viewMaybe
-            (Html.p
-                [ Attr.id <| name ++ "-desc-error"
-                , Attr.class "fr-error-text"
-                ]
-            )
-            errorMsg
+                hints ->
+                    static <| Html.span [ Attr.class "fr-hint-text" ] hints
+            ]
+        , iconWrapper inp
         ]
+            ++ [ Html.Extra.viewMaybe
+                    (Html.p
+                        [ Attr.id <| name ++ "-desc-valid"
+                        , Attr.class "fr-valid-text"
+                        ]
+                    )
+                    validMsg
+               , Html.Extra.viewMaybe
+                    (Html.p
+                        [ Attr.id <| name ++ "-desc-error"
+                        , Attr.class "fr-error-text"
+                        ]
+                    )
+                    errorMsg
+               ]
