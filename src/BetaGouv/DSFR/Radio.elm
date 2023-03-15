@@ -2,6 +2,7 @@ module BetaGouv.DSFR.Radio exposing
     ( group, view
     , inline, stacked
     , viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendAttrs, withLegendExtra, withSuccess
+    , GroupConfig
     )
 
 {-|
@@ -21,6 +22,11 @@ module BetaGouv.DSFR.Radio exposing
 
 @docs viewRich, withDisabled, withDisabledOption, withError, withExtraAttrs, withHint, withLegendAttrs, withLegendExtra, withSuccess
 
+
+# Type
+
+@docs GroupConfig
+
 -}
 
 import Accessibility exposing (Attribute, Html, decorativeImg, div, fieldset, label, p, span, text)
@@ -31,21 +37,21 @@ import Html.Attributes as Attr exposing (class, classList)
 import Html.Attributes.Extra exposing (attributeMaybe, empty)
 import Html.Events as Events
 import Html.Extra exposing (static, viewMaybe)
-import Html.Keyed as Keyed
 
 
+{-| -}
 type alias GroupConfig msg data =
     ( MandatoryConfig msg data, OptionalConfig msg data )
 
 
 type alias MandatoryConfig msg data =
     { id : String
+    , legend : Html msg
     , options : List data
     , current : Maybe data
-    , toLabel : data -> Html Never
+    , onChecked : data -> msg
     , toId : data -> String
-    , msg : data -> msg
-    , legend : Html msg
+    , toLabel : data -> Html Never
     }
 
 
@@ -89,12 +95,12 @@ defaultOptions =
 
     Radio.group
         { id = "group-id"
+        , legend = text "Légende du groupe"
         , options = options
         , current = Just option
-        , toLabel = optionToLabel >> text
+        , onChecked = ClickOption
         , toId = optionToId
-        , msg = ClickOption
-        , legend = text "Légende du groupe"
+        , toLabel = optionToLabel >> text
         }
         |> Radio.withError formErrors
         |> Radio.inline
@@ -103,12 +109,12 @@ defaultOptions =
 -}
 group :
     { id : String
+    , legend : Html msg
     , options : List data
     , current : Maybe data
-    , toLabel : data -> Html Never
+    , onChecked : data -> msg
     , toId : data -> String
-    , msg : data -> msg
-    , legend : Html msg
+    , toLabel : data -> Html Never
     }
     -> GroupConfig msg data
 group mandatory =
@@ -130,101 +136,99 @@ viewRich toSrc =
 
 
 viewGeneric : Maybe (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> Html msg
-viewGeneric toSrc ( { id, options, current, toLabel, toId, msg, legend }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs, legendAttrs } ) =
+viewGeneric toSrc ( { id, legend, options, current, onChecked, toId, toLabel } as mandatoryConfig, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs, legendAttrs } as optionalConfig ) =
     let
-        inlineAttrs =
+        inlineClass =
             case orientation of
                 Horizontal ->
-                    [ class "fr-fieldset--inline", class "fr-col" ]
+                    class "fr-fieldset__element--inline"
 
                 Vertical ->
-                    []
+                    empty
+
+        viewElement option =
+            div
+                [ class "fr-fieldset__element", inlineClass ]
+                [ viewSingle toSrc ( mandatoryConfig, optionalConfig ) option ]
     in
     div
-        (class "fr-form-group"
-            :: class "fr-col"
-            :: extraAttrs
-        )
+        (class "fr-form-group" :: extraAttrs)
         [ fieldset
-            (class "fr-fieldset"
-                :: attributeMaybe (\_ -> class "fr-fieldset--error") error
-                :: attributeMaybe (\_ -> Accessibility.Role.group) error
-                :: attributeMaybe (\_ -> class "fr-fieldset--valid") success
-                :: attributeMaybe (\_ -> Accessibility.Role.group) success
-                :: Attr.disabled disabled
-                :: (labelledBy <|
-                        String.join " " <|
-                            List.filterMap identity <|
-                                [ Just <| id ++ "-legend"
-                                , Maybe.map (\_ -> id ++ "-desc-error") error
-                                , Maybe.map (\_ -> id ++ "-desc-valid") success
-                                ]
-                   )
-                :: inlineAttrs
-            )
-            [ Accessibility.legend
+            [ class "fr-fieldset"
+            , attributeMaybe (\_ -> class "fr-fieldset--error") error
+            , attributeMaybe (\_ -> Accessibility.Role.group) error
+            , attributeMaybe (\_ -> class "fr-fieldset--valid") success
+            , attributeMaybe (\_ -> Accessibility.Role.group) success
+            , Attr.disabled disabled
+            , labelledBy <|
+                String.join " " <|
+                    List.filterMap identity <|
+                        [ Just <| id ++ "-legend"
+                        , Maybe.map (\_ -> id ++ "-desc-error") error
+                        , Maybe.map (\_ -> id ++ "-desc-valid") success
+                        ]
+            ]
+          <|
+            (Accessibility.legend
                 (class "fr-fieldset__legend fr-text--regular" :: legendAttrs)
                 [ legend
                 , viewMaybe (List.singleton >> span [ class "fr-hint-text" ]) legendExtra
                 ]
-            , Keyed.node "div" [ class "fr-fieldset__content", class "fr-col" ] <|
-                List.map
-                    (\option ->
-                        let
-                            dis =
-                                disabledOption option
+                :: List.map viewElement options
+            )
+                ++ [ viewMaybe (\err -> p [ class "fr-error-text", Attr.id <| id ++ "-desc-error" ] [ text err ]) error
+                   , viewMaybe (\suc -> p [ class "fr-valid-text", Attr.id <| id ++ "-desc-valid" ] [ text suc ]) success
+                   ]
+        ]
 
-                            name =
-                                id ++ "-option-" ++ toId option
-                        in
-                        ( name
-                        , div
-                            [ class "fr-radio-group"
-                            , classList [ ( "fr-radio-rich", toSrc /= Nothing ) ]
-                            , class "fr-col"
-                            ]
-                            [ input
-                                [ Attr.type_ "radio"
-                                , Attr.id <| name
-                                , Attr.checked (current == Just option)
-                                , if dis then
-                                    empty
 
-                                  else
-                                    Events.onClick <| msg <| option
-                                , Attr.disabled dis
-                                ]
-                                []
-                            , label
-                                [ class "fr-label"
-                                , Attr.for <| name
-                                ]
-                                [ static <| toLabel option
-                                , viewMaybe ((\fn -> fn option) >> List.singleton >> span [ class "fr-hint-text" ]) <| toHint
-                                ]
-                            , viewMaybe
-                                (\fn ->
-                                    let
-                                        ( src, dimensions ) =
-                                            fn option
+viewSingle : Maybe (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> data -> Html msg
+viewSingle toSrc ( { id, options, current, onChecked, toId, toLabel }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs, legendAttrs } ) option =
+    let
+        dis =
+            disabledOption option
 
-                                        dimensionsAttrs =
-                                            dimensions
-                                                |> Maybe.map (\( width, height ) -> [ Attr.width width, Attr.height height ])
-                                                |> Maybe.withDefault []
-                                    in
-                                    div [ class "fr-radio-rich__img" ]
-                                        [ decorativeImg <| Attr.src src :: dimensionsAttrs ]
-                                )
-                                toSrc
-                            ]
-                        )
-                    )
-                <|
-                    options
-            , viewMaybe (\err -> p [ class "fr-error-text", Attr.id <| id ++ "-desc-error" ] [ text err ]) error
-            , viewMaybe (\suc -> p [ class "fr-valid-text", Attr.id <| id ++ "-desc-valid" ] [ text suc ]) success
+        name =
+            id ++ "-option-" ++ toId option
+    in
+    div
+        [ class "fr-radio-group"
+        , classList [ ( "fr-radio-rich", toSrc /= Nothing ) ]
+        ]
+        [ input
+            [ Attr.type_ "radio"
+            , Attr.id <| name
+            , Attr.checked (current == Just option)
+            , if dis then
+                empty
+
+              else
+                Events.onClick <| onChecked option
+            , Attr.disabled dis
             ]
+            []
+        , label
+            [ class "fr-label"
+            , Attr.for <| name
+            ]
+            [ static <| toLabel option
+            , viewMaybe ((\fn -> fn option) >> List.singleton >> span [ class "fr-hint-text" ]) <| toHint
+            ]
+        , viewMaybe
+            (\fn ->
+                let
+                    ( src, dimensions ) =
+                        fn option
+
+                    dimensionsAttrs =
+                        dimensions
+                            |> Maybe.map (\( width, height ) -> [ Attr.width width, Attr.height height ])
+                            |> Maybe.withDefault []
+                in
+                div [ class "fr-radio-rich__img" ]
+                    [ decorativeImg <| Attr.src src :: dimensionsAttrs ]
+            )
+            toSrc
         ]
 
 
