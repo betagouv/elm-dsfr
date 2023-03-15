@@ -2,6 +2,7 @@ module BetaGouv.DSFR.Input exposing
     ( new, view
     , textArea, date, email, number, password, textDisplay, text
     , withDisabled, withValid, withError, withExtraAttrs, withHint, withReadonly, withType, withIcon
+    , Config
     )
 
 {-|
@@ -20,6 +21,11 @@ module BetaGouv.DSFR.Input exposing
 # Configuration
 
 @docs withDisabled, withValid, withError, withExtraAttrs, withHint, withReadonly, withType, withIcon
+
+
+# Type
+
+@docs Config
 
 -}
 
@@ -47,64 +53,64 @@ type InputType
 {-| Crée un champ de saisie
 
     Input.new
-        { value = date
-        , onInput = UpdateDate
+        { onInput = UpdateDate
+        , id = "date"
         , label = text "Date"
-        , name = "date"
+        , value = date
         }
         |> Input.date
         |> Input.view
 
 -}
 new :
-    { value : String
-    , onInput : String -> msg
+    { onInput : String -> msg
+    , id : String
     , label : Html Never
-    , name : String
+    , value : String
     }
-    -> InputConfig msg
+    -> Config msg
 new mandatory =
     { mandatory = mandatory, optional = defaultOptions }
 
 
 {-| -}
-withHint : List (Html Never) -> InputConfig msg -> InputConfig msg
+withHint : List (Html Never) -> Config msg -> Config msg
 withHint hint { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | hint = hint } }
 
 
 {-| -}
-withError : Maybe (List (Html msg)) -> InputConfig msg -> InputConfig msg
+withError : Maybe (List (Html msg)) -> Config msg -> Config msg
 withError errorMsg { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | errorMsg = errorMsg } }
 
 
 {-| -}
-withValid : Maybe (List (Html msg)) -> InputConfig msg -> InputConfig msg
+withValid : Maybe (List (Html msg)) -> Config msg -> Config msg
 withValid validMsg { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | validMsg = validMsg } }
 
 
 {-| -}
-withDisabled : Bool -> InputConfig msg -> InputConfig msg
+withDisabled : Bool -> Config msg -> Config msg
 withDisabled disabled { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | disabled = disabled } }
 
 
 {-| -}
-withReadonly : Bool -> InputConfig msg -> InputConfig msg
+withReadonly : Bool -> Config msg -> Config msg
 withReadonly readonly { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | readonly = readonly } }
 
 
 {-| -}
-withIcon : Maybe String -> InputConfig msg -> InputConfig msg
+withIcon : Maybe String -> Config msg -> Config msg
 withIcon icon { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | icon = icon } }
 
 
 {-| -}
-withType : InputType -> InputConfig msg -> InputConfig msg
+withType : InputType -> Config msg -> Config msg
 withType type_ { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | type_ = type_ } }
 
@@ -112,74 +118,75 @@ withType type_ { mandatory, optional } =
 {-| Affiche un textarea
 
     Input.new
-        { value = value
-        , onInput = UpdateComment
+        { onInput = UpdateComment
+        , id = "commentaire"
         , label = text "Commentaire"
-        , name = "commentaire"
+        , value = value
         }
         |> Input.textArea (Just 8)
         |> Input.withExtraAttrs [ class "w-full" ]
         |> Input.view
 
 -}
-textArea : Maybe Int -> InputConfig msg -> InputConfig msg
+textArea : Maybe Int -> Config msg -> Config msg
 textArea rows =
     withType <| TextArea rows
 
 
 {-| -}
-text : InputConfig msg -> InputConfig msg
+text : Config msg -> Config msg
 text =
     withType <| TextInput
 
 
 {-| -}
-email : InputConfig msg -> InputConfig msg
+email : Config msg -> Config msg
 email =
     withType <| EmailInput
 
 
 {-| -}
-password : InputConfig msg -> InputConfig msg
+password : Config msg -> Config msg
 password =
     withType <| PasswordInput
 
 
 {-| -}
-textDisplay : InputConfig msg -> InputConfig msg
+textDisplay : Config msg -> Config msg
 textDisplay =
     withType TextDisplay
 
 
 {-| -}
-date : InputConfig msg -> InputConfig msg
+date : Config msg -> Config msg
 date =
     withType DateInput
 
 
 {-| -}
-number : InputConfig msg -> InputConfig msg
+number : Config msg -> Config msg
 number =
     withType NumberInput
 
 
 {-| -}
-withExtraAttrs : List (Attribute Never) -> InputConfig msg -> InputConfig msg
+withExtraAttrs : List (Attribute Never) -> Config msg -> Config msg
 withExtraAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
 
 
-type alias InputConfig msg =
+{-| -}
+type alias Config msg =
     { mandatory : MandatoryInputConfig msg
     , optional : OptionalInputConfig msg
     }
 
 
 type alias MandatoryInputConfig msg =
-    { value : String
-    , onInput : String -> msg
+    { onInput : String -> msg
+    , id : String
     , label : Html Never
-    , name : String
+    , value : String
     }
 
 
@@ -209,14 +216,14 @@ defaultOptions =
 
 
 {-| -}
-view : InputConfig msg -> Html msg
+view : Config msg -> Html msg
 view { mandatory, optional } =
     let
         { label, onInput, value } =
             mandatory
 
-        name =
-            "input-" ++ mandatory.name
+        id =
+            "input-" ++ mandatory.id
 
         { errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs } =
             optional
@@ -228,16 +235,16 @@ view { mandatory, optional } =
                 , ( "fr-input--error", errorMsg /= Nothing )
                 ]
             , Html.Attributes.Extra.attributeIf (Nothing /= validMsg) <|
-                Aria.describedBy [ name ++ "-desc-valid" ]
+                Aria.describedBy [ id ++ "-desc-valid" ]
             , Html.Attributes.Extra.attributeIf (Nothing /= errorMsg) <|
-                Aria.describedBy [ name ++ "-desc-error" ]
-            , Attr.id name
-            , Attr.name name
+                Aria.describedBy [ id ++ "-desc-error" ]
+            , Attr.id id
+            , Attr.name id
             , Attr.value value
             , Attr.disabled disabled
             , Attr.readonly readonly
             , Events.onInput onInput
-            , Attr.property "autocomplete" <| Encode.string name
+            , Attr.property "autocomplete" <| Encode.string id
             ]
 
         iconWrapper =
@@ -252,15 +259,15 @@ view { mandatory, optional } =
         inp =
             case type_ of
                 TextInput ->
-                    Html.inputText name <|
+                    Html.inputText id <|
                         (defaultInputAttrs ++ [ Attr.type_ "text" ])
 
                 EmailInput ->
-                    Html.inputText name <|
+                    Html.inputText id <|
                         (defaultInputAttrs ++ [ Attr.type_ "email" ])
 
                 PasswordInput ->
-                    Html.inputText name <|
+                    Html.inputText id <|
                         (defaultInputAttrs ++ [ Attr.type_ "password" ])
 
                 TextArea rows ->
@@ -270,7 +277,7 @@ view { mandatory, optional } =
                     Root.input (defaultInputAttrs ++ [ Attr.type_ "date" ]) []
 
                 NumberInput ->
-                    Html.inputNumber name <|
+                    Html.inputNumber id <|
                         (defaultInputAttrs ++ [ Attr.type_ "number", Attr.attribute "inputmode" "numeric", Attr.pattern "[0-9]*" ])
 
                 TextDisplay ->
@@ -295,7 +302,7 @@ view { mandatory, optional } =
     <|
         [ Html.label
             [ Attr.class "fr-label"
-            , Attr.for name
+            , Attr.for id
             ]
             [ static label
             , case hint of
@@ -309,14 +316,14 @@ view { mandatory, optional } =
         ]
             ++ [ Html.Extra.viewMaybe
                     (Html.p
-                        [ Attr.id <| name ++ "-desc-valid"
+                        [ Attr.id <| id ++ "-desc-valid"
                         , Attr.class "fr-valid-text"
                         ]
                     )
                     validMsg
                , Html.Extra.viewMaybe
                     (Html.p
-                        [ Attr.id <| name ++ "-desc-error"
+                        [ Attr.id <| id ++ "-desc-error"
                         , Attr.class "fr-error-text"
                         ]
                     )

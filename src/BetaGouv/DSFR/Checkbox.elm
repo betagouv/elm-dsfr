@@ -4,6 +4,7 @@ module BetaGouv.DSFR.Checkbox exposing
     , group, viewGroup
     , inline, stacked
     , groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess
+    , Config, GroupConfig
     )
 
 {-|
@@ -36,6 +37,11 @@ module BetaGouv.DSFR.Checkbox exposing
 
 @docs groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess
 
+
+# Type
+
+@docs Config, GroupConfig
+
 -}
 
 import Accessibility exposing (Attribute, Html, checkbox, div, fieldset, legend, p, span, text)
@@ -45,22 +51,22 @@ import BetaGouv.DSFR.Typography as Typo
 import Html.Attributes as Attr exposing (class)
 import Html.Attributes.Extra exposing (attributeMaybe, empty)
 import Html.Events as Events
-import Html.Extra exposing (viewMaybe)
+import Html.Extra exposing (static, viewMaybe)
 
 
-type alias CheckboxConfig msg data =
-    ( MandatoryConfig msg data
+{-| -}
+type alias Config msg =
+    ( MandatoryConfig msg
     , OptionalConfig
     )
 
 
-type alias MandatoryConfig msg data =
-    { value : data
-    , checked : Maybe Bool
-    , valueAsString : data -> String
+type alias MandatoryConfig msg =
+    { checked : Maybe Bool
+    , onChecked : Bool -> msg
     , id : String
-    , label : String
-    , onChecked : data -> Bool -> msg
+    , label : Html Never
+    , value : String
     }
 
 
@@ -83,27 +89,27 @@ defaultOptionalConfig =
 
 {-| Affiche une checkbox
 -}
-viewSingle : CheckboxConfig msg data -> Html msg
-viewSingle ( { value, checked, valueAsString, id, label, onChecked }, { hint, disabled, error, success } ) =
+viewSingle : Config msg -> Html msg
+viewSingle ( { checked, onChecked, id, label, value }, { hint, disabled, error, success } ) =
     div
         [ class "fr-checkbox-group"
         , attributeMaybe (\_ -> class "fr-checkbox-group--error") error
         , attributeMaybe (\_ -> class "fr-checkbox-group--valid") success
         ]
-        [ checkbox (valueAsString value)
+        [ checkbox value
             checked
             [ Attr.name id
             , Attr.id id
             , Attr.disabled disabled
             , attributeMaybe (\_ -> describedBy [ id ++ "-desc-error" ]) error
             , attributeMaybe (\_ -> describedBy [ id ++ "-desc-valid" ]) success
-            , Events.onCheck <| onChecked value
+            , Events.onCheck onChecked
             ]
         , Accessibility.label
             [ class "fr-label"
             , Attr.for id
             ]
-            [ text label
+            [ static label
             , viewMaybe
                 (text >> List.singleton >> span [ class "fr-hint-text" ])
                 hint
@@ -116,53 +122,52 @@ viewSingle ( { value, checked, valueAsString, id, label, onChecked }, { hint, di
 {-| Crée une checkbox
 
     Checkbox.single
-        { value = "value"
-        , checked = Just True
-        , valueAsString = identity
+        { checked = Just True
+        , onChecked = ToggleSelection
         , id = "id"
         , label = "label"
-        , onChecked = ToggleSelection
+        , value = "value"
         }
         |> Checkbox.viewSingle
 
 -}
 single :
-    { value : data
-    , checked : Maybe Bool
-    , valueAsString : data -> String
+    { checked : Maybe Bool
+    , onChecked : Bool -> msg
     , id : String
-    , label : String
-    , onChecked : data -> Bool -> msg
+    , label : Html Never
+    , value : String
     }
-    -> CheckboxConfig msg data
+    -> Config msg
 single config =
     Tuple.pair config defaultOptionalConfig
 
 
 {-| -}
-singleWithHint : Maybe String -> CheckboxConfig msg data -> CheckboxConfig msg data
+singleWithHint : Maybe String -> Config msg -> Config msg
 singleWithHint hint ( mandatory, optional ) =
     ( mandatory, { optional | hint = hint } )
 
 
 {-| -}
-singleWithDisabled : Bool -> CheckboxConfig msg data -> CheckboxConfig msg data
+singleWithDisabled : Bool -> Config msg -> Config msg
 singleWithDisabled disabled ( mandatory, optional ) =
     ( mandatory, { optional | disabled = disabled } )
 
 
 {-| -}
-singleWithError : Maybe String -> CheckboxConfig msg data -> CheckboxConfig msg data
+singleWithError : Maybe String -> Config msg -> Config msg
 singleWithError error ( mandatory, optional ) =
     ( mandatory, { optional | error = error } )
 
 
 {-| -}
-singleWithSuccess : Maybe String -> CheckboxConfig msg data -> CheckboxConfig msg data
+singleWithSuccess : Maybe String -> Config msg -> Config msg
 singleWithSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
 
 
+{-| -}
 type alias GroupConfig msg data =
     ( MandatoryGroupConfig msg data
     , OptionalGroupConfig data
@@ -171,13 +176,13 @@ type alias GroupConfig msg data =
 
 type alias MandatoryGroupConfig msg data =
     { id : String
-    , label : Html msg
-    , onChecked : data -> Bool -> msg
-    , values : List data
+    , legend : Html msg
+    , options : List data
     , checked : List data
-    , valueAsString : data -> String
+    , onChecked : data -> Bool -> msg
     , toId : data -> String
-    , toLabel : data -> String
+    , toLabel : data -> Html Never
+    , toValue : data -> String
     }
 
 
@@ -218,14 +223,14 @@ type Orientation
 {-| Crée un groupe de case à cocher
 
     Checkbox.group
-        { id = "id"
-        , label = text "label"
-        , onChecked = Action
-        , values = values
+        { id = "group-id"
+        , legend = text "Légende du groupe"
+        , options = options
         , checked = checkedValues
-        , valueAsString = identity
-        , toId = identity
-        , toLabel = identity
+        , onChecked = ClickOption
+        , toId = optionToId
+        , toLabel = optionToLabel >> text
+        , toValue = optionToValue
         }
         |> Checkbox.inline
         |> Checkbox.viewGroup
@@ -233,13 +238,13 @@ type Orientation
 -}
 group :
     { id : String
-    , label : Html msg
-    , onChecked : data -> Bool -> msg
-    , values : List data
+    , legend : Html msg
+    , options : List data
     , checked : List data
-    , valueAsString : data -> String
+    , onChecked : data -> Bool -> msg
     , toId : data -> String
-    , toLabel : data -> String
+    , toLabel : data -> Html Never
+    , toValue : data -> String
     }
     -> GroupConfig msg data
 group config =
@@ -249,7 +254,7 @@ group config =
 {-| Affiche le groupe
 -}
 viewGroup : GroupConfig msg data -> Html msg
-viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabel }, { hint, disabled, error, success, orientation, toHint, toDisabled, toError, toSuccess, extraAttrs } ) =
+viewGroup ( { id, legend, options, checked, onChecked, toId, toLabel, toValue }, { hint, disabled, error, success, orientation, toHint, toDisabled, toError, toSuccess, extraAttrs } ) =
     let
         inlineClass =
             case orientation of
@@ -263,12 +268,11 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
             div
                 [ class "fr-fieldset__element", inlineClass ]
                 [ single
-                    { value = v
-                    , checked = Just <| List.member v checked
-                    , valueAsString = valueAsString
+                    { checked = Just <| List.member v checked
+                    , onChecked = onChecked v
                     , id = id ++ "-option-" ++ toId v
                     , label = toLabel v
-                    , onChecked = onChecked
+                    , value = toValue v
                     }
                     |> singleWithHint (toHint v)
                     |> singleWithDisabled (toDisabled v)
@@ -296,15 +300,15 @@ viewGroup ( { id, label, onChecked, values, checked, valueAsString, toId, toLabe
             ++ extraAttrs
         )
     <|
-        legend
+        Accessibility.legend
             [ class "fr-fieldset__legend"
             , Typo.textRegular
             , Attr.id <| id ++ "-legend"
             ]
-            [ label
+            [ legend
             , viewMaybe (\h -> span [ class "fr-hint-text" ] [ text h ]) hint
             ]
-            :: List.map viewElement values
+            :: List.map viewElement options
             ++ [ viewMaybe (\err -> p [ class "fr-error-text", Attr.id <| id ++ "-desc-error" ] [ text err ]) error
                , viewMaybe (\suc -> p [ class "fr-valid-text", Attr.id <| id ++ "-desc-valid" ] [ text suc ]) success
                ]
