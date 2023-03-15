@@ -29,7 +29,7 @@ module BetaGouv.DSFR.Radio exposing
 
 -}
 
-import Accessibility exposing (Attribute, Html, decorativeImg, div, fieldset, label, p, span, text)
+import Accessibility exposing (Attribute, Html, decorativeImg, div, fieldset, label, p, radio, span, text)
 import Accessibility.Aria exposing (labelledBy)
 import Accessibility.Role
 import Html exposing (input)
@@ -52,6 +52,7 @@ type alias MandatoryConfig msg data =
     , onChecked : data -> msg
     , toId : data -> String
     , toLabel : data -> Html Never
+    , toValue : data -> String
     }
 
 
@@ -101,6 +102,7 @@ defaultOptions =
         , onChecked = ClickOption
         , toId = optionToId
         , toLabel = optionToLabel >> text
+        , toValue = optionToValue
         }
         |> Radio.withError formErrors
         |> Radio.inline
@@ -115,6 +117,7 @@ group :
     , onChecked : data -> msg
     , toId : data -> String
     , toLabel : data -> Html Never
+    , toValue : data -> String
     }
     -> GroupConfig msg data
 group mandatory =
@@ -183,7 +186,7 @@ viewGeneric toSrc ( { id, legend, options, current, onChecked, toId, toLabel } a
 
 
 viewSingle : Maybe (data -> ( String, Maybe Dimensions )) -> GroupConfig msg data -> data -> Html msg
-viewSingle toSrc ( { id, options, current, onChecked, toId, toLabel }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs, legendAttrs } ) option =
+viewSingle toSrc ( { id, options, current, onChecked, toId, toLabel, toValue }, { toHint, legendExtra, error, success, orientation, disabled, disabledOption, extraAttrs, legendAttrs } ) option =
     let
         dis =
             disabledOption option
@@ -195,10 +198,10 @@ viewSingle toSrc ( { id, options, current, onChecked, toId, toLabel }, { toHint,
         [ class "fr-radio-group"
         , classList [ ( "fr-radio-rich", toSrc /= Nothing ) ]
         ]
-        [ input
-            [ Attr.type_ "radio"
-            , Attr.id <| name
-            , Attr.checked (current == Just option)
+        [ radio name
+            (toValue option)
+            (current == Just option)
+            [ Attr.id <| name
             , if dis then
                 empty
 
@@ -206,7 +209,6 @@ viewSingle toSrc ( { id, options, current, onChecked, toId, toLabel }, { toHint,
                 Events.onClick <| onChecked option
             , Attr.disabled dis
             ]
-            []
         , label
             [ class "fr-label"
             , Attr.for <| name
