@@ -1,7 +1,7 @@
 module BetaGouv.DSFR.Input exposing
     ( new, view
-    , textArea, date, email, number, password, textDisplay, text
-    , withDisabled, withValid, withError, withExtraAttrs, withHint, withReadonly, withType, withIcon
+    , textArea, date, email, numeric, decimal, password, textDisplay, text, custom
+    , withDisabled, withValid, withError, withHint, withReadonly, withType, withIcon, withInputAttrs, withExtraAttrs
     , Config
     )
 
@@ -15,12 +15,12 @@ module BetaGouv.DSFR.Input exposing
 
 # Types de champ de saisie
 
-@docs textArea, date, email, number, password, textDisplay, text
+@docs textArea, date, email, numeric, decimal, password, textDisplay, text, custom
 
 
 # Configuration
 
-@docs withDisabled, withValid, withError, withExtraAttrs, withHint, withReadonly, withType, withIcon
+@docs withDisabled, withValid, withError, withHint, withReadonly, withType, withIcon, withInputAttrs, withExtraAttrs
 
 
 # Type
@@ -46,8 +46,10 @@ type InputType
     | PasswordInput
     | TextArea (Maybe Int)
     | DateInput
-    | NumberInput
+    | NumericInput
+    | DecimalInput Float
     | TextDisplay
+    | CustomType String
 
 
 {-| Crée un champ de saisie
@@ -115,7 +117,7 @@ withType type_ { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | type_ = type_ } }
 
 
-{-| Affiche un textarea
+{-| Définit un champ de saisie de type textarea
 
     Input.new
         { onInput = UpdateComment
@@ -164,15 +166,57 @@ date =
 
 
 {-| -}
-number : Config msg -> Config msg
-number =
-    withType NumberInput
+numeric : Config msg -> Config msg
+numeric =
+    withType NumericInput
+
+
+{-| Définit un champ de saisie personnalisé
+
+    Input.new
+        { onInput = UpdatePhone
+        , id = "phone"
+        , label = text "Numéro de téléphone"
+        , value = value
+        }
+        |> Input.custom "tel"
+        |> Input.view
+
+-}
+custom : String -> Config msg -> Config msg
+custom type_ =
+    withType (CustomType type_)
+
+
+{-| Définit un champ de saisie décimal
+
+    Input.new
+        { onInput = UpdateCost
+        , id = "cost"
+        , label = text "Coût"
+        , value = cost
+        }
+        |> Input.decimal 0.01
+        |> Input.view
+
+    `Input.decimal 0.01` signifie une précision à deux décimales après la virgule.
+
+-}
+decimal : Float -> Config msg -> Config msg
+decimal step =
+    withType (DecimalInput step)
 
 
 {-| -}
 withExtraAttrs : List (Attribute Never) -> Config msg -> Config msg
 withExtraAttrs extraAttrs { mandatory, optional } =
     { mandatory = mandatory, optional = { optional | extraAttrs = extraAttrs } }
+
+
+{-| -}
+withInputAttrs : List (Attribute msg) -> Config msg -> Config msg
+withInputAttrs inputAttrs { mandatory, optional } =
+    { mandatory = mandatory, optional = { optional | inputAttrs = inputAttrs } }
 
 
 {-| -}
@@ -199,6 +243,7 @@ type alias OptionalInputConfig msg =
     , icon : Maybe String
     , type_ : InputType
     , extraAttrs : List (Attribute Never)
+    , inputAttrs : List (Attribute msg)
     }
 
 
@@ -212,6 +257,7 @@ defaultOptions =
     , icon = Nothing
     , type_ = TextInput
     , extraAttrs = []
+    , inputAttrs = []
     }
 
 
@@ -225,7 +271,7 @@ view { mandatory, optional } =
         id =
             "input-" ++ mandatory.id
 
-        { errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs } =
+        { errorMsg, validMsg, disabled, readonly, hint, icon, type_, extraAttrs, inputAttrs } =
             optional
 
         defaultInputAttrs =
@@ -246,6 +292,7 @@ view { mandatory, optional } =
             , Events.onInput onInput
             , Attr.property "autocomplete" <| Encode.string id
             ]
+                ++ inputAttrs
 
         iconWrapper =
             case icon of
@@ -259,16 +306,13 @@ view { mandatory, optional } =
         inp =
             case type_ of
                 TextInput ->
-                    Html.inputText id <|
-                        (defaultInputAttrs ++ [ Attr.type_ "text" ])
+                    Root.input (defaultInputAttrs ++ [ Attr.type_ "text" ]) []
 
                 EmailInput ->
-                    Html.inputText id <|
-                        (defaultInputAttrs ++ [ Attr.type_ "email" ])
+                    Root.input (defaultInputAttrs ++ [ Attr.type_ "email" ]) []
 
                 PasswordInput ->
-                    Html.inputText id <|
-                        (defaultInputAttrs ++ [ Attr.type_ "password" ])
+                    Root.input (defaultInputAttrs ++ [ Attr.type_ "password" ]) []
 
                 TextArea rows ->
                     Html.textarea ((rows |> Maybe.map Attr.rows |> Maybe.withDefault empty) :: defaultInputAttrs) []
@@ -276,9 +320,25 @@ view { mandatory, optional } =
                 DateInput ->
                     Root.input (defaultInputAttrs ++ [ Attr.type_ "date" ]) []
 
-                NumberInput ->
-                    Html.inputNumber id <|
-                        (defaultInputAttrs ++ [ Attr.type_ "number", Attr.attribute "inputmode" "numeric", Attr.pattern "[0-9]*" ])
+                NumericInput ->
+                    Root.input
+                        (defaultInputAttrs
+                            ++ [ Attr.type_ "number"
+                               , Attr.attribute "inputmode" "numeric"
+                               , Attr.pattern "[0-9]*"
+                               ]
+                        )
+                        []
+
+                DecimalInput step ->
+                    Root.input
+                        (defaultInputAttrs
+                            ++ [ Attr.type_ "number"
+                               , Attr.attribute "inputmode" "decimal"
+                               , Attr.step (String.fromFloat step)
+                               ]
+                        )
+                        []
 
                 TextDisplay ->
                     Html.div [ Attr.class "mt-[0.5rem] py-[0.5rem]", BetaGouv.DSFR.Typography.textBold ]
@@ -289,6 +349,9 @@ view { mandatory, optional } =
                             else
                                 value
                         ]
+
+                CustomType customType ->
+                    Root.input (Attr.type_ customType :: defaultInputAttrs) []
     in
     Html.div
         (Attr.class "fr-input-group"
