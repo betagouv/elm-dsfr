@@ -1,6 +1,13 @@
+
+> WARNING: This design system is only meant to be used for official French's public service websites and apps.  
+> Its main purpose is to make it easy to identify governmental websites for citizens. [See terms](https://www.systeme-de-design.gouv.fr/cgu/).
+
+> ATTENTION: Ce design système a uniquement vocation à être utilisé pour des sites officiels de l'état.  
+> Son but est de rendre la parole de l'état clairement identifiable. [Consulter les CGU](https://www.systeme-de-design.gouv.fr/cgu/).
+
 ## Introduction
 
-Un package Elm pour le [System de design du gouvernement français (DSFR)](https://www.systeme-de-design.gouv.fr/). Ce projet est en cours développement. Contribuez et faites-nous part de vos retours via les [GitHub Issues](https://github.com/betagouv/elm-dsfr/issues).
+Un package Elm pour le [Système de design du gouvernement français (DSFR)](https://www.systeme-de-design.gouv.fr/). Ce projet est en cours développement. Contribuez et faites-nous part de vos retours via les [GitHub Issues](https://github.com/betagouv/elm-dsfr/issues).
 
 ## Installation
 
