@@ -1,7 +1,7 @@
 module BetaGouv.DSFR.Tag exposing
     ( medium, small
     , unclickable, clickable, selectable, deletable
-    , withAttrs, withIcon
+    , TagConfig, withAttrs, withIcon
     )
 
 {-|
@@ -19,7 +19,7 @@ module BetaGouv.DSFR.Tag exposing
 
 # Configuration d'un tag
 
-@docs withAttrs, withIcon
+@docs TagConfig, withAttrs, withIcon
 
 -}
 
@@ -31,6 +31,7 @@ import Html.Attributes.Extra exposing (empty)
 import Html.Events exposing (onClick)
 
 
+{-| -}
 type alias TagConfig msg data =
     ( MandatoryConfig data
     , Tag msg data
