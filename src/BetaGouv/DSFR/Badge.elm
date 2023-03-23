@@ -1,7 +1,7 @@
 module BetaGouv.DSFR.Badge exposing
     ( badgeMD, badgeSM
     , default, system
-    , Context
+    , Context, error, info, new, success, warning
     , groupMD, groupSM
     , withColor, withAttrs
     )
@@ -21,7 +21,7 @@ module BetaGouv.DSFR.Badge exposing
 
 # Contexte de badge
 
-@docs Context
+@docs Context, error, info, new, success, warning
 
 
 # Groupe de badges
@@ -63,6 +63,36 @@ type Context
     | Info
     | Warning
     | New
+
+
+{-| -}
+success : Context
+success =
+    Success
+
+
+{-| -}
+error : Context
+error =
+    Error
+
+
+{-| -}
+info : Context
+info =
+    Info
+
+
+{-| -}
+warning : Context
+warning =
+    Warning
+
+
+{-| -}
+new : Context
+new =
+    New
 
 
 customColorToClass : CustomColor -> String

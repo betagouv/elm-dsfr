@@ -1,6 +1,7 @@
 module BetaGouv.DSFR.Button exposing
     ( new, view
     , group, viewGroup
+    , ButtonConfig
     , small, medium, large
     , disable, linkButton, linkButtonExternal, regular, reset, submit
     , leftIcon, rightIcon, noIcon, onlyIcon
@@ -29,6 +30,8 @@ module BetaGouv.DSFR.Button exposing
 
 
 # Configuration des boutons
+
+@docs ButtonConfig
 
 
 ## Tailles de bouton
@@ -411,6 +414,7 @@ view { mandatory, optional } =
         [ lab ]
 
 
+{-| -}
 type alias ButtonConfig msg =
     { mandatory : { onClick : Maybe msg, label : String }
     , optional : OptionalButtonConfig msg
