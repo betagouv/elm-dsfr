@@ -290,7 +290,6 @@ view { mandatory, optional } =
             , Attr.disabled disabled
             , Attr.readonly readonly
             , Events.onInput onInput
-            , Attr.property "autocomplete" <| Encode.string id
             ]
                 ++ inputAttrs
 
