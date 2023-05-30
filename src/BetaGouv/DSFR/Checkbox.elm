@@ -1,6 +1,6 @@
 module BetaGouv.DSFR.Checkbox exposing
     ( single, viewSingle
-    , singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess
+    , singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess, singleWithExtraAttrs, singleWithInputAttrs
     , group, viewGroup
     , inline, stacked
     , groupWithDisabled, groupWithError, groupWithExtraAttrs, groupWithHint, groupWithSuccess, groupWithToDisabled, groupWithToError, groupWithToHint, groupWithToSuccess
@@ -17,7 +17,7 @@ module BetaGouv.DSFR.Checkbox exposing
 
 ## Configuration
 
-@docs singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess
+@docs singleWithDisabled, singleWithError, singleWithHint, singleWithSuccess, singleWithExtraAttrs, singleWithInputAttrs
 
 
 # Groupe
@@ -75,6 +75,8 @@ type alias OptionalConfig =
     , disabled : Bool
     , error : Maybe String
     , success : Maybe String
+    , extraAttrs : List (Attribute Never)
+    , checkboxAttrs : List (Attribute Never)
     }
 
 
@@ -84,27 +86,33 @@ defaultOptionalConfig =
     , disabled = False
     , error = Nothing
     , success = Nothing
+    , extraAttrs = []
+    , checkboxAttrs = []
     }
 
 
 {-| Affiche une checkbox
 -}
 viewSingle : Config msg -> Html msg
-viewSingle ( { checked, onChecked, id, label, value }, { hint, disabled, error, success } ) =
+viewSingle ( { checked, onChecked, id, label, value }, { hint, disabled, error, success, extraAttrs, checkboxAttrs } ) =
     div
-        [ class "fr-checkbox-group"
-        , attributeMaybe (\_ -> class "fr-checkbox-group--error") error
-        , attributeMaybe (\_ -> class "fr-checkbox-group--valid") success
-        ]
+        ([ class "fr-checkbox-group"
+         , attributeMaybe (\_ -> class "fr-checkbox-group--error") error
+         , attributeMaybe (\_ -> class "fr-checkbox-group--valid") success
+         ]
+            ++ extraAttrs
+        )
         [ checkbox value
             checked
-            [ Attr.name id
-            , Attr.id id
-            , Attr.disabled disabled
-            , attributeMaybe (\_ -> describedBy [ id ++ "-desc-error" ]) error
-            , attributeMaybe (\_ -> describedBy [ id ++ "-desc-valid" ]) success
-            , Events.onCheck onChecked
-            ]
+            ([ Attr.name id
+             , Attr.id id
+             , Attr.disabled disabled
+             , attributeMaybe (\_ -> describedBy [ id ++ "-desc-error" ]) error
+             , attributeMaybe (\_ -> describedBy [ id ++ "-desc-valid" ]) success
+             , Events.onCheck onChecked
+             ]
+                ++ List.map (Attr.map Basics.never) checkboxAttrs
+            )
         , Accessibility.label
             [ class "fr-label"
             , Attr.for id
@@ -165,6 +173,18 @@ singleWithError error ( mandatory, optional ) =
 singleWithSuccess : Maybe String -> Config msg -> Config msg
 singleWithSuccess success ( mandatory, optional ) =
     ( mandatory, { optional | success = success } )
+
+
+{-| -}
+singleWithExtraAttrs : List (Attribute Never) -> Config msg -> Config msg
+singleWithExtraAttrs extraAttrs ( mandatory, optional ) =
+    ( mandatory, { optional | extraAttrs = extraAttrs } )
+
+
+{-| -}
+singleWithInputAttrs : List (Attribute Never) -> Config msg -> Config msg
+singleWithInputAttrs inputAttrs ( mandatory, optional ) =
+    ( mandatory, { optional | checkboxAttrs = inputAttrs } )
 
 
 {-| -}
